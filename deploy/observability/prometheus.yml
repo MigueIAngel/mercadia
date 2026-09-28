@@ -1,0 +1,18 @@
+global:
+  scrape_interval: 10s
+
+scrape_configs:
+  - job_name: mercadia
+    metrics_path: /metrics
+    static_configs:
+      # Services running on the host (npm run dev). docker-compose.yml overrides this file
+      # with container names when the whole stack runs in Docker.
+      - targets:
+          - host.docker.internal:4000
+          - host.docker.internal:4001
+          - host.docker.internal:4002
+          - host.docker.internal:4003
+          - host.docker.internal:4004
+          - host.docker.internal:4005
+          - host.docker.internal:4006
+          - host.docker.internal:8000
