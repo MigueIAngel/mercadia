@@ -91,6 +91,7 @@ export class OrdersService {
     const lines = await this.db
       .select({
         orderId: orderLines.orderId,
+        productId: orderLines.productId,
         title: orderLines.title,
         image: orderLines.image,
         quantity: orderLines.quantity,
