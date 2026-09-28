@@ -40,6 +40,7 @@ export class RateLimiter implements OnModuleDestroy {
       const key = `ratelimit:${name}:${ip}:${window}`;
       let count: number;
       try {
+        if (this.redis.status === 'wait') await this.redis.connect();
         count = await this.redis.incr(key);
         if (count === 1) await this.redis.expire(key, WINDOW_SECONDS);
       } catch {
