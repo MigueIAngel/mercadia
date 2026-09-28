@@ -6,6 +6,7 @@ import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import { Link, useRouter } from '@/i18n/navigation';
 import { call } from '@/lib/client';
+import { safeNext } from '@/lib/redirect';
 
 const DEMO_PASSWORD = 'Mercadia2026!';
 
@@ -84,10 +85,7 @@ export function AuthForm({ mode }: { mode: 'login' | 'register' }) {
   const [mfaToken, setMfaToken] = useState(params.get('mfa') ?? '');
 
   const done = () => {
-    // Only local paths (no open redirects); the router adds the locale prefix itself.
-    const next = params.get('next');
-    const safe =
-      next && /^\/(?!\/)/.test(next) ? next.replace(/^\/(es|en)(?=\/|$)/, '') || '/' : '/';
+    const safe = safeNext(params.get('next'));
     router.push(safe);
     router.refresh();
   };
