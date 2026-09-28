@@ -18,7 +18,9 @@
     "logout": "Sign out",
     "cart": "Cart",
     "currency": "Currency",
-    "language": "Español"
+    "language": "Español",
+    "messages": "Messages",
+    "wishlist": "Wishlist"
   },
   "home": {
     "heroTitle": "Everything you want, from stores you know",
@@ -69,7 +71,11 @@
     "option": {
       "size": "size",
       "color": "color"
-    }
+    },
+    "saved": "Saved",
+    "askLabel": "Your question for the store",
+    "askPlaceholder": "Do you have other colours? How long does shipping to my city take?",
+    "askSend": "Send question"
   },
   "search": {
     "title": "Results",
@@ -102,7 +108,8 @@
   "store": {
     "since": "On Mercadia since {date}",
     "products": "Products from this store",
-    "by": "A store by {name}"
+    "by": "A store by {name}",
+    "replyRate": "Replies to {percent}% of reviews"
   },
   "auth": {
     "loginTitle": "Sign in to your account",
@@ -248,7 +255,9 @@
     "connect": "Connect payout account",
     "transfers": "Transfers",
     "noOrders": "No orders yet.",
-    "buyerCity": "Customer in {city}"
+    "buyerCity": "Customer in {city}",
+    "reviews": "Reviews",
+    "messages": "Messages"
   },
   "admin": {
     "title": "Admin",
@@ -420,5 +429,74 @@
       "admin": "Mercadia",
       "system": "System"
     }
+  },
+  "reviews": {
+    "title": "Customer reviews",
+    "write": "Write a review",
+    "count": "{count, plural, =0 {No reviews} one {# review} other {# reviews}}",
+    "yourRating": "Your rating",
+    "titlePlaceholder": "Title (optional)",
+    "commentPlaceholder": "Tell other shoppers what you think (at least 10 characters)",
+    "publish": "Post review",
+    "onlyBuyers": "You can only review products you bought and received.",
+    "already": "You already reviewed this product.",
+    "sortBy": "Sort by",
+    "sorts": {
+      "recent": "Most recent",
+      "helpful": "Most helpful",
+      "rating": "Highest rated"
+    },
+    "empty": "No reviews yet. Be the first!",
+    "verified": "Verified purchase",
+    "sellerReply": "Store's reply",
+    "helpful": "Helpful ({count})",
+    "more": "More reviews",
+    "sellerTitle": "Your store reviews",
+    "average": "Average rating",
+    "total": "Reviews",
+    "replyRate": "Reply rate",
+    "pending": "{count} awaiting reply",
+    "reply": "Reply",
+    "replyPlaceholder": "Your reply will be public",
+    "publishReply": "Post reply"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "empty": "No notifications yet.",
+    "messages": "Go to messages",
+    "types": {
+      "welcome": "Welcome to Mercadia, {name}!",
+      "order_paid": "Payment confirmed for order #{number}.",
+      "new_sale": "New sale! Order #{number} is ready to prepare.",
+      "order_shipped": "{store} shipped your order #{number} (tracking {tracking}).",
+      "out_for_delivery": "Your order #{number} is out for delivery.",
+      "order_delivered": "Your order #{number} was delivered. Tell us what you think!",
+      "order_cancelled": "Order #{number} was cancelled.",
+      "refund": "We processed a refund for order #{number}.",
+      "dispute_opened": "A buyer opened a case. You have 72 hours to respond.",
+      "dispute_resolved": "Your case was resolved: {resolution, select, refund {full refund} partial_refund {partial refund} other {rejected}}.",
+      "price_drop": "Price drop! {title} is cheaper than when you saved it.",
+      "new_message": "New message from {from}."
+    }
+  },
+  "messages": {
+    "title": "Messages",
+    "asBuyer": "My purchases",
+    "asSeller": "My store",
+    "empty": "No conversations yet.",
+    "pick": "Pick a conversation.",
+    "back": "Back",
+    "about": "About: {product}",
+    "placeholder": "Write a message…",
+    "send": "Send"
+  },
+  "wishlist": {
+    "title": "Wishlist",
+    "count": "{count, plural, =0 {Nothing saved} one {# saved product} other {# saved products}}",
+    "drops": "{count, plural, one {# price drop} other {# price drops}}",
+    "empty": "Save products with the heart and we will tell you when they get cheaper.",
+    "explore": "Explore products",
+    "dropped": "{percent}% off",
+    "remove": "Remove from wishlist"
   }
 }
