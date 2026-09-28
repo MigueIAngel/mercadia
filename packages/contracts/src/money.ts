@@ -29,3 +29,12 @@ export function formatMoney({ amount, currency }: Money, locale = 'es-CO'): stri
     maximumFractionDigits: currency === 'COP' ? 0 : 2,
   }).format(amount / 100);
 }
+
+/**
+ * Shopper-facing price from a USD base price. COP prices are rounded to hundreds of pesos,
+ * like real Colombian price tags. Catalog (display) and orders (charging) share this rule.
+ */
+export function priceFromUsd(amountUsd: number, currency: Currency, usdToCop: number): number {
+  const value = convert(amountUsd, 'USD', currency, usdToCop);
+  return currency === 'COP' ? Math.round(value / 10000) * 10000 : value;
+}

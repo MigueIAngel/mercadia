@@ -42,3 +42,15 @@ describe('demo data', () => {
     expect(demoReviews().length).toBe(582);
   });
 });
+
+describe('demo orders', () => {
+  it('is deterministic and uses real products', async () => {
+    const { demoOrders } = await import('./orders.js');
+    const a = demoOrders();
+    expect(a).toEqual(demoOrders());
+    expect(a).toHaveLength(80);
+    const ids = new Set(demoProducts().map((p) => p.id));
+    expect(a.every((o) => o.lines.every((l) => ids.has(l.productId)))).toBe(true);
+    expect(new Set(a.map((o) => o.status))).toEqual(new Set(['delivered', 'shipped', 'paid']));
+  });
+});

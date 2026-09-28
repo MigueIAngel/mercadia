@@ -1,5 +1,5 @@
 import { Inject, Injectable, Logger, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
-import { convert, type Currency } from '@mercadia/contracts';
+import { convert, priceFromUsd, type Currency } from '@mercadia/contracts';
 import { CONFIG, type CatalogConfig } from '../config.js';
 
 const REFRESH_MS = 12 * 3600 * 1000;
@@ -62,8 +62,7 @@ export class RatesService implements OnModuleInit, OnModuleDestroy {
 
   /** USD cents → minor units of `currency`. COP prices are rounded to whole pesos x100. */
   fromUsd(amountUsd: number, currency: Currency): number {
-    const value = convert(amountUsd, 'USD', currency, this.usdToCop);
-    return currency === 'COP' ? Math.round(value / 10000) * 10000 : value;
+    return priceFromUsd(amountUsd, currency, this.usdToCop);
   }
 
   toUsd(amount: number, currency: Currency): number {
