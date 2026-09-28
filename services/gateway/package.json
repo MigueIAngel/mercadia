@@ -1,0 +1,35 @@
+{
+  "name": "@mercadia/gateway",
+  "version": "0.1.0",
+  "private": true,
+  "description": "API gateway: routing, rate limiting, circuit breakers, WebSocket proxy, API composition",
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "start": "node dist/main.js",
+    "lint": "oxlint src test",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@nestjs/testing": "^12.1.0",
+    "@types/supertest": "^7.2.1",
+    "oxlint": "^1.85.0",
+    "supertest": "^7.3.0",
+    "vitest": "^4.1.11"
+  },
+  "dependencies": {
+    "@mercadia/contracts": "^0.1.0",
+    "@mercadia/service-kit": "^0.1.0",
+    "@nestjs/common": "^12.1.0",
+    "@nestjs/core": "^12.1.0",
+    "@nestjs/platform-express": "^12.1.0",
+    "@nestjs/swagger": "^12.0.2",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.15.1",
+    "http-proxy-middleware": "^4.2.0",
+    "ioredis": "^6.0.0",
+    "nestjs-pino": "^5.2.1",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.2"
+  }
+}
