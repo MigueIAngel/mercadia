@@ -12,6 +12,8 @@ export default async function SellerLayout({ children }: LayoutProps<'/[locale]/
     ['/seller/orders', t('orders')],
     ['/seller/payouts', t('payouts')],
     ['/seller/disputes', t('disputes')],
+    ['/seller/reviews', t('reviews')],
+    ['/messages', t('messages')],
   ] as const;
   return (
     <div className="mx-auto grid max-w-7xl gap-8 px-4 py-8 lg:grid-cols-[220px_1fr]">

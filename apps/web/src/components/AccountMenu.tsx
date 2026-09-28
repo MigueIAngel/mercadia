@@ -1,6 +1,15 @@
 'use client';
 
-import { ChevronDown, LogOut, Package, Shield, Store, User } from 'lucide-react';
+import {
+  ChevronDown,
+  Heart,
+  LogOut,
+  MessageCircle,
+  Package,
+  Shield,
+  Store,
+  User,
+} from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useEffect, useRef, useState } from 'react';
 import { Link, useRouter } from '@/i18n/navigation';
@@ -49,6 +58,12 @@ export function AccountMenu({ name, roles }: { name: string; roles: string[] }) 
           </Link>
           <Link href="/account/orders" className={item}>
             <Package className="h-4 w-4" /> {t('orders')}
+          </Link>
+          <Link href="/messages" className={item}>
+            <MessageCircle className="h-4 w-4" /> {t('messages')}
+          </Link>
+          <Link href="/wishlist" className={item}>
+            <Heart className="h-4 w-4" /> {t('wishlist')}
           </Link>
           <Link href={roles.includes('seller') ? '/seller' : '/sell'} className={item}>
             <Store className="h-4 w-4" /> {roles.includes('seller') ? t('sellerCenter') : t('sell')}

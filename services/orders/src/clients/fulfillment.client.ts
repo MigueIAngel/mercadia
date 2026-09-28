@@ -33,7 +33,10 @@ export class FulfillmentClient {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'x-internal-key': this.config.internalKey },
         // Only what pricing needs; the full address never leaves orders here.
-        body: JSON.stringify({ destination: { city: destination.city, department: destination.department }, parcels }),
+        body: JSON.stringify({
+          destination: { city: destination.city, department: destination.department },
+          parcels,
+        }),
         signal: AbortSignal.timeout(4000),
       });
       if (response.ok) return (await response.json()) as ShippingRate[];

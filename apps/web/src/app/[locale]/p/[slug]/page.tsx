@@ -5,10 +5,12 @@ import { Price } from '@/components/Price';
 import { ProductCard, ProductGrid } from '@/components/ProductCard';
 import { Rating } from '@/components/Rating';
 import { Link } from '@/i18n/navigation';
-import { api, ApiError, currency } from '@/lib/api';
+import { api, ApiError, currency, session } from '@/lib/api';
 import type { ProductDetail, ProductSummary } from '@/lib/types';
 import { Gallery } from './Gallery';
 import { ProductPurchase } from './ProductPurchase';
+import { ProductSocial } from './ProductSocial';
+import { Reviews, type ReviewPage } from './Reviews';
 
 async function load(slug: string) {
   try {
@@ -37,12 +39,18 @@ export default async function ProductPage({ params }: PageProps<'/[locale]/p/[sl
   const product = await load(slug);
   const t = await getTranslations('product');
   const locale = await getLocale();
-  const related = await api<ProductSummary[]>(
-    `/products/${slug}/related?currency=${product.currency}`,
-    {
+  const emptyReviews: ReviewPage = {
+    summary: { avg: 0, count: 0, distribution: [0, 0, 0, 0, 0] },
+    items: [],
+    page: 1,
+  };
+  const [related, reviews, user] = await Promise.all([
+    api<ProductSummary[]>(`/products/${slug}/related?currency=${product.currency}`, {
       auth: false,
-    },
-  ).catch(() => []);
+    }).catch(() => []),
+    api<ReviewPage>(`/reviews/products/${product.id}`, { auth: false }).catch(() => emptyReviews),
+    session(),
+  ]);
   const specs = product.specs;
 
   const jsonLd = {
@@ -86,7 +94,9 @@ export default async function ProductPage({ params }: PageProps<'/[locale]/p/[sl
             <h1 className="mt-1 font-display text-4xl leading-tight">{product.title}</h1>
             <div className="mt-3 flex flex-wrap items-center gap-3 text-sm text-stone-500">
               <Rating value={product.rating.avg} />
-              <span>{t('reviews', { count: product.rating.count })}</span>
+              <a href="#reviews" className="hover:text-ink hover:underline">
+                {t('reviews', { count: product.rating.count })}
+              </a>
               <span>·</span>
               <span>{t('sold', { count: product.salesCount })}</span>
             </div>
@@ -107,6 +117,13 @@ export default async function ProductPage({ params }: PageProps<'/[locale]/p/[sl
             productId={product.id}
             options={product.options}
             variants={product.variants}
+          />
+          <ProductSocial
+            productId={product.id}
+            productSlug={product.slug}
+            storeId={product.store.id}
+            signedIn={!!user}
+            ownStore={user?.storeId === product.store.id}
           />
           <Link
             href={`/s/${product.store.slug}`}
@@ -176,6 +193,8 @@ export default async function ProductPage({ params }: PageProps<'/[locale]/p/[sl
           </dl>
         </section>
       </div>
+
+      <Reviews productId={product.id} initial={reviews} signedIn={!!user} />
 
       {related.length > 0 && (
         <section className="mt-12">

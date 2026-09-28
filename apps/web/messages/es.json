@@ -18,7 +18,9 @@
     "logout": "Cerrar sesión",
     "cart": "Carrito",
     "currency": "Moneda",
-    "language": "English"
+    "language": "English",
+    "messages": "Mensajes",
+    "wishlist": "Favoritos"
   },
   "home": {
     "heroTitle": "Todo lo que buscas, de tiendas que conoces",
@@ -69,7 +71,11 @@
     "option": {
       "size": "talla",
       "color": "color"
-    }
+    },
+    "saved": "En favoritos",
+    "askLabel": "Tu pregunta para la tienda",
+    "askPlaceholder": "¿Tienen otros colores? ¿Cuánto tarda el envío a mi ciudad?",
+    "askSend": "Enviar pregunta"
   },
   "search": {
     "title": "Resultados",
@@ -102,7 +108,8 @@
   "store": {
     "since": "En Mercadia desde {date}",
     "products": "Productos de la tienda",
-    "by": "Tienda de {name}"
+    "by": "Tienda de {name}",
+    "replyRate": "Responde el {percent}% de las reseñas"
   },
   "auth": {
     "loginTitle": "Ingresa a tu cuenta",
@@ -248,7 +255,9 @@
     "connect": "Conectar cuenta de pagos",
     "transfers": "Transferencias",
     "noOrders": "Aún no tienes pedidos.",
-    "buyerCity": "Cliente en {city}"
+    "buyerCity": "Cliente en {city}",
+    "reviews": "Reseñas",
+    "messages": "Mensajes"
   },
   "admin": {
     "title": "Administración",
@@ -420,5 +429,74 @@
       "admin": "Mercadia",
       "system": "Sistema"
     }
+  },
+  "reviews": {
+    "title": "Opiniones de compradores",
+    "write": "Escribir reseña",
+    "count": "{count, plural, =0 {Sin reseñas} one {# reseña} other {# reseñas}}",
+    "yourRating": "Tu calificación",
+    "titlePlaceholder": "Título (opcional)",
+    "commentPlaceholder": "Cuéntale a otros compradores qué te pareció (mínimo 10 caracteres)",
+    "publish": "Publicar reseña",
+    "onlyBuyers": "Solo puedes reseñar productos que compraste y recibiste.",
+    "already": "Ya publicaste una reseña de este producto.",
+    "sortBy": "Ordenar por",
+    "sorts": {
+      "recent": "Más recientes",
+      "helpful": "Más útiles",
+      "rating": "Mejor calificación"
+    },
+    "empty": "Aún no hay reseñas. ¡Sé el primero en opinar!",
+    "verified": "Compra verificada",
+    "sellerReply": "Respuesta de la tienda",
+    "helpful": "Útil ({count})",
+    "more": "Ver más reseñas",
+    "sellerTitle": "Reseñas de tu tienda",
+    "average": "Calificación promedio",
+    "total": "Reseñas",
+    "replyRate": "Tasa de respuesta",
+    "pending": "{count, plural, one {# sin responder} other {# sin responder}}",
+    "reply": "Responder",
+    "replyPlaceholder": "Tu respuesta será pública",
+    "publishReply": "Publicar respuesta"
+  },
+  "notifications": {
+    "title": "Notificaciones",
+    "empty": "No tienes notificaciones.",
+    "messages": "Ver mensajes",
+    "types": {
+      "welcome": "¡Bienvenido a Mercadia, {name}!",
+      "order_paid": "Pago confirmado para tu pedido #{number}.",
+      "new_sale": "¡Nueva venta! Pedido #{number} listo para preparar.",
+      "order_shipped": "{store} despachó tu pedido #{number} (guía {tracking}).",
+      "out_for_delivery": "Tu pedido #{number} está en reparto.",
+      "order_delivered": "Tu pedido #{number} fue entregado. ¡Cuéntanos qué te pareció!",
+      "order_cancelled": "El pedido #{number} fue cancelado.",
+      "refund": "Procesamos un reembolso del pedido #{number}.",
+      "dispute_opened": "Un comprador abrió un caso. Tienes 72 horas para responder.",
+      "dispute_resolved": "Tu caso fue resuelto: {resolution, select, refund {reembolso total} partial_refund {reembolso parcial} other {rechazado}}.",
+      "price_drop": "¡Bajó de precio! {title} está más barato que cuando lo guardaste.",
+      "new_message": "Nuevo mensaje de {from}."
+    }
+  },
+  "messages": {
+    "title": "Mensajes",
+    "asBuyer": "Mis compras",
+    "asSeller": "Mi tienda",
+    "empty": "No hay conversaciones todavía.",
+    "pick": "Elige una conversación.",
+    "back": "Volver",
+    "about": "Sobre: {product}",
+    "placeholder": "Escribe un mensaje…",
+    "send": "Enviar"
+  },
+  "wishlist": {
+    "title": "Favoritos",
+    "count": "{count, plural, =0 {Sin productos guardados} one {# producto guardado} other {# productos guardados}}",
+    "drops": "{count, plural, one {# bajó de precio} other {# bajaron de precio}}",
+    "empty": "Guarda productos con el corazón y te avisamos si bajan de precio.",
+    "explore": "Explorar productos",
+    "dropped": "Bajó {percent}%",
+    "remove": "Quitar de favoritos"
   }
 }
