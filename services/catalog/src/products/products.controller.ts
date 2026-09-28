@@ -130,6 +130,13 @@ export class ProductsController {
   // ----- service to service -----
 
   @Internal()
+  @Get('internal/products/export')
+  @ApiOperation({ summary: 'Searchable product text for the AI service (ids: comma-separated)' })
+  export(@Query('ids') ids?: string) {
+    return this.products.export(ids ? ids.split(',').filter(Boolean) : undefined);
+  }
+
+  @Internal()
   @Post('internal/quote')
   @HttpCode(200)
   @ApiOperation({ summary: 'Authoritative prices and stock for checkout (orders service)' })
