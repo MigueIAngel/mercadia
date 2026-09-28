@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Mercadia">
+  <rect width="64" height="64" rx="16" fill="#111827"/>
+  <path d="M22 22c0-5.5 4.5-10 10-10s10 4.5 10 10" fill="none" stroke="#fbf8f3" stroke-width="4" stroke-linecap="round"/>
+  <path d="M14 24h36l-3.2 26.4A4 4 0 0 1 42.8 54H21.2a4 4 0 0 1-4-3.6z" fill="#f97316"/>
+  <path d="M22 46V32l10 9 10-9v14" fill="none" stroke="#fff" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
