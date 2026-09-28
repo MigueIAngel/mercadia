@@ -10,7 +10,7 @@
     "apps/*"
   ],
   "scripts": {
-    "build:packages": "npm run build -w @mercadia/contracts -w @mercadia/service-kit",
+    "build:packages": "npm run build -w @mercadia/contracts -w @mercadia/service-kit -w @mercadia/demo-data",
     "build": "npm run build:packages && npm run build --workspaces --if-present",
     "test": "npm run test --workspaces --if-present",
     "lint": "npm run lint --workspaces --if-present",
@@ -23,6 +23,7 @@
     "node": ">=22"
   },
   "devDependencies": {
+    "@types/node": "^24.19.0",
     "prettier": "^3.9.9",
     "typescript": "^6.0.3",
     "vitest": "^4.1.11"
