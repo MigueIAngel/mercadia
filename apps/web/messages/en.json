@@ -231,7 +231,24 @@
       "active": "Published",
       "units": "Units in stock",
       "sold": "Units sold"
-    }
+    },
+    "orders": "Orders",
+    "payouts": "Payouts",
+    "disputes": "Cases",
+    "accept": "Accept order",
+    "ship": "Print label",
+    "express": "Express",
+    "sales30": "Sales (30 days)",
+    "orders30": "Orders (30 days)",
+    "toShip": "To ship",
+    "held": "Held until delivery",
+    "released": "Released",
+    "commission": "Mercadia fee",
+    "payoutsOn": "Payouts enabled",
+    "connect": "Connect payout account",
+    "transfers": "Transfers",
+    "noOrders": "No orders yet.",
+    "buyerCity": "Customer in {city}"
   },
   "admin": {
     "title": "Admin",
@@ -248,7 +265,11 @@
       "sellers": "Sellers",
       "twoFactor": "With 2FA",
       "newThisWeek": "New this week"
-    }
+    },
+    "disputes": "Disputes",
+    "orders": "Orders",
+    "gmv": "Gross sales (GMV)",
+    "commission": "Fees"
   },
   "footer": {
     "tagline": "A demo marketplace built with microservices.",
@@ -266,5 +287,138 @@
     "yes": "Yes",
     "no": "No",
     "notFound": "We could not find this page."
+  },
+  "cart": {
+    "title": "Your cart",
+    "empty": "Your cart is empty.",
+    "keepShopping": "Keep shopping",
+    "soldBy": "Sold by {store}",
+    "remove": "Remove",
+    "subtotal": "Subtotal",
+    "ivaIncluded": "VAT included: {amount}",
+    "checkout": "Checkout",
+    "unavailable": "Some items no longer have enough stock."
+  },
+  "checkout": {
+    "title": "Checkout",
+    "address": "Shipping address",
+    "newAddress": "New address",
+    "label": "Name (e.g. Home)",
+    "fullName": "Recipient",
+    "phone": "Phone",
+    "line1": "Address",
+    "line2": "Apartment, suite (optional)",
+    "city": "City",
+    "department": "Department",
+    "save": "Save address",
+    "summary": "Summary",
+    "shipping": "Shipping",
+    "free": "Free",
+    "eta": "Arrives in ~{days} days",
+    "total": "Total",
+    "place": "Place order",
+    "placing": "Placing order…",
+    "loginFirst": "Sign in to check out.",
+    "chooseAddress": "Choose or add an address."
+  },
+  "pay": {
+    "title": "Payment for order #{number}",
+    "amount": "Amount due",
+    "card": "Card number",
+    "expiry": "Expiry (MM/YY)",
+    "cvc": "CVC",
+    "pay": "Pay {amount}",
+    "paying": "Processing…",
+    "testMode": "Test mode: no real money is charged. Use these cards:",
+    "approved": "approved",
+    "declined": "declined",
+    "insufficient": "insufficient funds",
+    "success": "Payment approved! Your order is confirmed.",
+    "failed": "The payment was declined: {reason}. You can try another card.",
+    "expiresIn": "Your order is held for 30 minutes.",
+    "viewOrder": "View my order",
+    "stripeNote": "Payments processed by Stripe in test mode."
+  },
+  "orders": {
+    "title": "My orders",
+    "empty": "You have not bought anything yet.",
+    "order": "Order #{number}",
+    "placedOn": "Placed on {date}",
+    "status": {
+      "pending_payment": "Awaiting payment",
+      "paid": "Paid",
+      "processing": "Being prepared",
+      "shipped": "Shipped",
+      "delivered": "Delivered",
+      "completed": "Completed",
+      "cancelled": "Cancelled",
+      "partially_refunded": "Partially refunded",
+      "refunded": "Refunded"
+    },
+    "payNow": "Pay now",
+    "cancel": "Cancel order",
+    "tracking": "Tracking",
+    "trackingNumber": "Tracking {number}",
+    "openDispute": "Report a problem",
+    "dispute": "Return or dispute case",
+    "reason": "Reason",
+    "reasons": {
+      "not_received": "Not received",
+      "damaged": "Arrived damaged",
+      "not_as_described": "Not as described",
+      "wrong_item": "Wrong item",
+      "return": "I want to return it"
+    },
+    "describe": "Tell us what happened",
+    "amount": "Amount to refund (optional)",
+    "submitDispute": "Open case",
+    "history": "History",
+    "shippingTo": "Ship to",
+    "items": "Items",
+    "paymentMethod": "Paid with {brand} •••• {last4}"
+  },
+  "tracking": {
+    "title": "Shipment tracking",
+    "carrier": "Carrier",
+    "from": "From",
+    "to": "To",
+    "estimated": "Estimated delivery",
+    "steps": {
+      "label_created": "Label created",
+      "in_transit": "In transit",
+      "out_for_delivery": "Out for delivery",
+      "delivered": "Delivered"
+    },
+    "notFound": "We could not find that tracking number."
+  },
+  "disputes": {
+    "title": "Cases and disputes",
+    "empty": "No cases.",
+    "status": {
+      "open": "Waiting for the seller",
+      "seller_rejected": "Rejected by the seller",
+      "escalated": "Under Mercadia review",
+      "resolved": "Resolved"
+    },
+    "resolution": {
+      "refund": "Full refund",
+      "partial_refund": "Partial refund",
+      "rejected": "Rejected"
+    },
+    "requested": "Requested: {amount}",
+    "refunded": "Refunded: {amount}",
+    "send": "Send",
+    "message": "Write a message…",
+    "escalate": "Ask Mercadia for help",
+    "accept": "Accept and refund",
+    "reject": "Reject",
+    "resolve": "Resolve",
+    "deadline": "The seller must answer before {date}",
+    "roles": {
+      "buyer": "Buyer",
+      "seller": "Seller",
+      "admin": "Mercadia",
+      "system": "System"
+    }
   }
 }

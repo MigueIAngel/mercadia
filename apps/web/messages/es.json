@@ -231,7 +231,24 @@
       "active": "Publicados",
       "units": "Unidades en stock",
       "sold": "Unidades vendidas"
-    }
+    },
+    "orders": "Pedidos",
+    "payouts": "Pagos",
+    "disputes": "Casos",
+    "accept": "Aceptar pedido",
+    "ship": "Generar guía",
+    "express": "Express",
+    "sales30": "Ventas (30 días)",
+    "orders30": "Pedidos (30 días)",
+    "toShip": "Por despachar",
+    "held": "Retenido hasta la entrega",
+    "released": "Liberado",
+    "commission": "Comisión Mercadia",
+    "payoutsOn": "Pagos activos",
+    "connect": "Conectar cuenta de pagos",
+    "transfers": "Transferencias",
+    "noOrders": "Aún no tienes pedidos.",
+    "buyerCity": "Cliente en {city}"
   },
   "admin": {
     "title": "Administración",
@@ -248,7 +265,11 @@
       "sellers": "Vendedores",
       "twoFactor": "Con 2FA",
       "newThisWeek": "Nuevos esta semana"
-    }
+    },
+    "disputes": "Disputas",
+    "orders": "Pedidos",
+    "gmv": "Ventas totales (GMV)",
+    "commission": "Comisiones"
   },
   "footer": {
     "tagline": "Marketplace de demostración construido con microservicios.",
@@ -266,5 +287,138 @@
     "yes": "Sí",
     "no": "No",
     "notFound": "No encontramos esta página."
+  },
+  "cart": {
+    "title": "Tu carrito",
+    "empty": "Tu carrito está vacío.",
+    "keepShopping": "Seguir comprando",
+    "soldBy": "Vendido por {store}",
+    "remove": "Quitar",
+    "subtotal": "Subtotal",
+    "ivaIncluded": "IVA incluido: {amount}",
+    "checkout": "Ir a pagar",
+    "unavailable": "Algunos productos ya no tienen stock suficiente."
+  },
+  "checkout": {
+    "title": "Finalizar compra",
+    "address": "Dirección de envío",
+    "newAddress": "Nueva dirección",
+    "label": "Nombre (ej. Casa)",
+    "fullName": "Quién recibe",
+    "phone": "Teléfono",
+    "line1": "Dirección",
+    "line2": "Apto, oficina (opcional)",
+    "city": "Ciudad",
+    "department": "Departamento",
+    "save": "Guardar dirección",
+    "summary": "Resumen",
+    "shipping": "Envío",
+    "free": "Gratis",
+    "eta": "Llega en ~{days} días",
+    "total": "Total",
+    "place": "Confirmar pedido",
+    "placing": "Creando pedido…",
+    "loginFirst": "Ingresa para finalizar tu compra.",
+    "chooseAddress": "Elige o agrega una dirección."
+  },
+  "pay": {
+    "title": "Pago del pedido #{number}",
+    "amount": "Total a pagar",
+    "card": "Número de tarjeta",
+    "expiry": "Vencimiento (MM/AA)",
+    "cvc": "CVC",
+    "pay": "Pagar {amount}",
+    "paying": "Procesando…",
+    "testMode": "Modo de prueba: no se cobra dinero real. Usa estas tarjetas:",
+    "approved": "aprobada",
+    "declined": "rechazada",
+    "insufficient": "fondos insuficientes",
+    "success": "¡Pago aprobado! Tu pedido está confirmado.",
+    "failed": "El pago fue rechazado: {reason}. Puedes intentar con otra tarjeta.",
+    "expiresIn": "Tu pedido se reserva durante 30 minutos.",
+    "viewOrder": "Ver mi pedido",
+    "stripeNote": "Pagos procesados por Stripe en modo de prueba."
+  },
+  "orders": {
+    "title": "Mis compras",
+    "empty": "Aún no has comprado nada.",
+    "order": "Pedido #{number}",
+    "placedOn": "Realizado el {date}",
+    "status": {
+      "pending_payment": "Pendiente de pago",
+      "paid": "Pagado",
+      "processing": "En preparación",
+      "shipped": "Enviado",
+      "delivered": "Entregado",
+      "completed": "Completado",
+      "cancelled": "Cancelado",
+      "partially_refunded": "Reembolso parcial",
+      "refunded": "Reembolsado"
+    },
+    "payNow": "Pagar ahora",
+    "cancel": "Cancelar pedido",
+    "tracking": "Seguimiento",
+    "trackingNumber": "Guía {number}",
+    "openDispute": "Tengo un problema",
+    "dispute": "Caso de devolución o disputa",
+    "reason": "Motivo",
+    "reasons": {
+      "not_received": "No me llegó",
+      "damaged": "Llegó dañado",
+      "not_as_described": "No es como se describía",
+      "wrong_item": "Producto equivocado",
+      "return": "Quiero devolverlo"
+    },
+    "describe": "Cuéntanos qué pasó",
+    "amount": "Monto a reembolsar (opcional)",
+    "submitDispute": "Abrir caso",
+    "history": "Historial",
+    "shippingTo": "Enviar a",
+    "items": "Productos",
+    "paymentMethod": "Pagado con {brand} •••• {last4}"
+  },
+  "tracking": {
+    "title": "Seguimiento de envío",
+    "carrier": "Transportadora",
+    "from": "Desde",
+    "to": "Hasta",
+    "estimated": "Entrega estimada",
+    "steps": {
+      "label_created": "Guía creada",
+      "in_transit": "En tránsito",
+      "out_for_delivery": "En reparto",
+      "delivered": "Entregado"
+    },
+    "notFound": "No encontramos esa guía."
+  },
+  "disputes": {
+    "title": "Casos y disputas",
+    "empty": "No hay casos.",
+    "status": {
+      "open": "Esperando al vendedor",
+      "seller_rejected": "Rechazado por el vendedor",
+      "escalated": "En revisión por Mercadia",
+      "resolved": "Resuelto"
+    },
+    "resolution": {
+      "refund": "Reembolso total",
+      "partial_refund": "Reembolso parcial",
+      "rejected": "Rechazado"
+    },
+    "requested": "Solicitado: {amount}",
+    "refunded": "Reembolsado: {amount}",
+    "send": "Enviar",
+    "message": "Escribe un mensaje…",
+    "escalate": "Pedir ayuda a Mercadia",
+    "accept": "Aceptar y reembolsar",
+    "reject": "Rechazar",
+    "resolve": "Resolver",
+    "deadline": "El vendedor debe responder antes del {date}",
+    "roles": {
+      "buyer": "Comprador",
+      "seller": "Vendedor",
+      "admin": "Mercadia",
+      "system": "Sistema"
+    }
   }
 }

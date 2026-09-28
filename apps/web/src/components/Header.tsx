@@ -10,10 +10,11 @@ import { SearchBox } from './SearchBox';
 export async function Header() {
   const t = await getTranslations('nav');
   const locale = (await getLocale()) as 'es' | 'en';
-  const [user, cur, categories] = await Promise.all([
+  const [user, cur, categories, cart] = await Promise.all([
     session(),
     currency(),
     api<Category[]>('/categories', { auth: false, revalidate: 300 }).catch(() => [] as Category[]),
+    api<{ count: number }>('/cart/count').catch(() => ({ count: 0 })),
   ]);
 
   return (
@@ -38,6 +39,11 @@ export async function Header() {
             aria-label={t('cart')}
           >
             <ShoppingCart className="h-5 w-5" />
+            {cart.count > 0 && (
+              <span className="absolute -top-0.5 -right-0.5 grid h-5 min-w-5 place-items-center rounded-full bg-accent-500 px-1 text-[11px] font-bold text-white">
+                {cart.count}
+              </span>
+            )}
           </Link>
           {user ? (
             <AccountMenu name={user.name} roles={user.roles} />
