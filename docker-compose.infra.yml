@@ -5,8 +5,10 @@ services:
   mongo:
     # Atlas Local = MongoDB + Atlas Search / Vector Search, same features as the cloud M0.
     image: mongodb/mongodb-atlas-local:8
+    # A fixed hostname keeps the single-node replica set valid across restarts.
+    hostname: mongodb
     ports: ["27017:27017"]
-    volumes: [mongodata:/data/db]
+    volumes: [mongodata:/data/db, mongoconfig:/data/configdb]
     healthcheck:
       test: ["CMD", "mongosh", "--quiet", "--eval", "db.runCommand({ ping: 1 }).ok"]
       interval: 5s
@@ -71,5 +73,6 @@ services:
 
 volumes:
   mongodata:
+  mongoconfig:
   pgdata:
   redisdata:
