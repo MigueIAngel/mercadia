@@ -1,0 +1,44 @@
+{
+  "name": "@mercadia/engagement",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Engagement service: reviews and reputation, buyer-seller chat, notifications, wishlist and price alerts",
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "start": "node dist/main.js",
+    "lint": "oxlint src test",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@mercadia/contracts": "^0.1.0",
+    "@mercadia/demo-data": "^0.1.0",
+    "@mercadia/service-kit": "^0.1.0",
+    "@nestjs/common": "^12.1.1",
+    "@nestjs/core": "^12.1.1",
+    "@nestjs/mongoose": "^12.0.0",
+    "@nestjs/platform-express": "^12.1.1",
+    "@nestjs/platform-socket.io": "^12.1.1",
+    "@nestjs/swagger": "^12.0.2",
+    "@nestjs/websockets": "^12.1.1",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.15.1",
+    "ioredis": "^6.0.0",
+    "mongoose": "^9.10.2",
+    "nestjs-pino": "^5.2.1",
+    "nodemailer": "^10.0.12",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.2",
+    "socket.io": "^4.8.4"
+  },
+  "devDependencies": {
+    "@nestjs/testing": "^12.1.1",
+    "@types/nodemailer": "^8.0.2",
+    "@types/supertest": "^7.2.1",
+    "jose": "^6.2.12",
+    "oxlint": "^1.86.0",
+    "socket.io-client": "^4.8.4",
+    "supertest": "^7.3.0",
+    "vitest": "^4.1.11"
+  }
+}
