@@ -38,6 +38,16 @@ async function handle(request: NextRequest, { params }: { params: Promise<{ path
     cache: 'no-store',
   });
 
+  // Opening a store returns a fresh session (new roles): keep tokens out of the browser.
+  if (upstream.ok && request.method === 'POST' && path.join('/') === 'stores') {
+    const session = (await upstream.json()) as Parameters<typeof authCookies>[0] & {
+      user: unknown;
+    };
+    const response = NextResponse.json({ user: session.user }, { status: upstream.status });
+    for (const c of authCookies(session)) response.cookies.set(c.name, c.value, c.options);
+    return response;
+  }
+
   const response = new NextResponse(upstream.status === 204 ? null : upstream.body, {
     status: upstream.status,
     headers: { 'Content-Type': upstream.headers.get('content-type') ?? 'application/json' },
