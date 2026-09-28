@@ -229,6 +229,7 @@ export class OrdersService {
       fxRate: order.fxRate,
       total: order.total,
       paymentDeadline: order.paymentDeadline,
+      shippingAddress: order.shippingAddress,
       sellers: order.sellerOrders.map((s) => ({
         sellerOrderId: s.id,
         storeId: s.storeId,
