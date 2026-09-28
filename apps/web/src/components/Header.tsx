@@ -1,9 +1,10 @@
-import { ShoppingCart } from 'lucide-react';
+import { Heart, ShoppingCart } from 'lucide-react';
 import { getLocale, getTranslations } from 'next-intl/server';
 import { Link } from '@/i18n/navigation';
 import { api, currency, session } from '@/lib/api';
 import type { Category } from '@/lib/types';
 import { AccountMenu } from './AccountMenu';
+import { NotificationBell } from './NotificationBell';
 import { CurrencySwitch, LanguageSwitch } from './Preferences';
 import { SearchBox } from './SearchBox';
 
@@ -16,6 +17,9 @@ export async function Header() {
     api<Category[]>('/categories', { auth: false, revalidate: 300 }).catch(() => [] as Category[]),
     api<{ count: number }>('/cart/count').catch(() => ({ count: 0 })),
   ]);
+  const unread = user
+    ? await api<{ count: number }>('/notifications/unread').catch(() => ({ count: 0 }))
+    : { count: 0 };
 
   return (
     <header className="sticky top-0 z-30 border-b border-stone-200 bg-cream/90 backdrop-blur">
@@ -45,6 +49,18 @@ export async function Header() {
               </span>
             )}
           </Link>
+          {user && (
+            <>
+              <Link
+                href="/wishlist"
+                className="hidden rounded-full p-2 hover:bg-stone-100 sm:block"
+                aria-label={t('wishlist')}
+              >
+                <Heart className="h-5 w-5" />
+              </Link>
+              <NotificationBell initialUnread={unread.count} />
+            </>
+          )}
           {user ? (
             <AccountMenu name={user.name} roles={user.roles} />
           ) : (
