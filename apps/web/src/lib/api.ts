@@ -2,7 +2,7 @@ import 'server-only';
 import { cookies, headers } from 'next/headers';
 import type { Currency } from '@mercadia/contracts';
 import { ApiError, GATEWAY_URL, readError } from './gateway';
-import { ACCESS_COOKIE, claimsOf, CURRENCY_COOKIE } from './session';
+import { ACCESS_COOKIE, CART_COOKIE, claimsOf, CURRENCY_COOKIE } from './session';
 
 export { ApiError };
 
@@ -23,12 +23,14 @@ export async function api<T>(
   const { auth = true, revalidate, ...rest } = init;
   const jar = await cookies();
   const token = auth ? jar.get(ACCESS_COOKIE)?.value : undefined;
+  const cartId = jar.get(CART_COOKIE)?.value;
   const response = await fetch(`${GATEWAY_URL}/api${path}`, {
     ...rest,
     headers: {
       'Content-Type': 'application/json',
       ...(await clientHeaders()),
       ...(token && { Authorization: `Bearer ${token}` }),
+      ...(cartId && { 'x-cart-id': cartId }),
       ...rest.headers,
     },
     ...(revalidate !== undefined && !token ? { next: { revalidate } } : { cache: 'no-store' }),

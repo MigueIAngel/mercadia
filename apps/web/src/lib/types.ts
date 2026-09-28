@@ -96,3 +96,133 @@ export interface HomeData {
   topRated: ProductSummary[];
   stores: StoreSummary[];
 }
+
+export interface CartLine {
+  productId: string;
+  sku: string;
+  title: string;
+  image: string | null;
+  options: Record<string, string>;
+  quantity: number;
+  unitPrice: number;
+  total: number;
+  available: boolean;
+  stock: number;
+}
+
+export interface CartStore {
+  storeId: string;
+  storeName: string;
+  lines: CartLine[];
+  subtotal: number;
+  tax: number;
+  shipping?: number;
+  etaDays?: number;
+  carrier?: string;
+  total?: number;
+}
+
+export interface CartView {
+  currency: 'COP' | 'USD';
+  stores: CartStore[];
+  unavailable: { productId: string; sku: string; reason: string }[];
+  subtotal: number;
+  tax: number;
+  count: number;
+  shippingTotal?: number;
+  total?: number;
+}
+
+export interface Address {
+  id: string;
+  label: string;
+  fullName: string;
+  phone: string;
+  line1: string;
+  line2: string | null;
+  city: string;
+  department: string;
+  country: string;
+  isDefault: boolean;
+}
+
+export interface OrderLineView {
+  id: number;
+  productId: string;
+  sku: string;
+  title: string;
+  image: string | null;
+  options: Record<string, string>;
+  quantity: number;
+  unitPrice: number;
+  total: number;
+}
+
+export interface SellerOrderView {
+  id: string;
+  storeId: string;
+  storeName: string;
+  status: string;
+  subtotal: number;
+  shipping: number;
+  tax: number;
+  total: number;
+  commission: number;
+  refunded: number;
+  trackingNumber: string | null;
+  lines: OrderLineView[];
+}
+
+export interface OrderView {
+  id: string;
+  number: number;
+  status: string;
+  currency: 'COP' | 'USD';
+  subtotal: number;
+  shippingTotal: number;
+  taxTotal: number;
+  total: number;
+  cancelReason: string | null;
+  shippingAddress: Omit<Address, 'id' | 'label' | 'isDefault'>;
+  createdAt: string;
+  paymentDeadline: string;
+  sellerOrders: SellerOrderView[];
+  history: {
+    id: number;
+    status: string;
+    note: string | null;
+    at: string;
+    sellerOrderId: string | null;
+  }[];
+}
+
+export interface TrackingView {
+  trackingNumber: string;
+  carrier: string;
+  service: string;
+  status: string;
+  origin: string;
+  destinationCity: string;
+  estimatedDelivery: string;
+  deliveredAt: string | null;
+  events: { status: string; location: string; at: string }[];
+  sellerOrderId?: string;
+}
+
+export interface DisputeView {
+  id: string;
+  orderId: string;
+  sellerOrderId: string;
+  reason: string;
+  description: string;
+  requestedAmount: number;
+  maxAmount: number;
+  currency: 'COP' | 'USD';
+  status: 'open' | 'seller_rejected' | 'escalated' | 'resolved';
+  resolution: 'refund' | 'partial_refund' | 'rejected' | null;
+  refundAmount: number | null;
+  sellerDeadline: string;
+  createdAt: string;
+  viewerRole?: 'buyer' | 'seller' | 'admin';
+  messages?: { id: number; authorRole: string; text: string; at: string }[];
+}

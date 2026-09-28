@@ -2,7 +2,8 @@ import { getLocale, getTranslations } from 'next-intl/server';
 import { AdminAction } from '@/components/AdminAction';
 import { Link } from '@/i18n/navigation';
 import { api } from '@/lib/api';
-import { dateTime } from '@/lib/format';
+import { dateTime, money } from '@/lib/format';
+import type { DisputeView } from '@/lib/types';
 import { requireUser } from '@/lib/guard';
 
 interface AdminUser {
@@ -43,7 +44,7 @@ interface Stats {
   newThisWeek: number;
 }
 
-const TABS = ['users', 'stores', 'products', 'audit'] as const;
+const TABS = ['users', 'stores', 'products', 'disputes', 'audit'] as const;
 
 export default async function AdminPage({ searchParams }: PageProps<'/[locale]/admin'>) {
   await requireUser('/admin', 'admin');
@@ -52,7 +53,12 @@ export default async function AdminPage({ searchParams }: PageProps<'/[locale]/a
   const locale = await getLocale();
   const requested = (await searchParams).tab;
   const tab = TABS.find((x) => x === requested) ?? 'users';
-  const stats = await api<Stats>('/admin/stats');
+  const [stats, sales] = await Promise.all([
+    api<Stats>('/admin/stats'),
+    api<{ orders: number; gmvCop: number; commissionCop: number }>('/admin/orders/stats').catch(
+      () => null,
+    ),
+  ]);
   const cell = 'p-3';
 
   let content: React.ReactNode = null;
@@ -163,6 +169,28 @@ export default async function AdminPage({ searchParams }: PageProps<'/[locale]/a
         </tbody>
       </table>
     );
+  } else if (tab === 'disputes') {
+    const td = await getTranslations('disputes');
+    const list = await api<DisputeView[]>('/admin/disputes');
+    content = (
+      <table className="w-full text-sm">
+        <tbody className="divide-y divide-stone-100">
+          {list.map((d) => (
+            <tr key={d.id}>
+              <td className={cell}>
+                <Link href={`/account/disputes/${d.id}`} className="font-medium hover:underline">
+                  {d.reason}
+                </Link>
+                <p className="line-clamp-1 text-xs text-stone-500">{d.description}</p>
+              </td>
+              <td className={cell}>{money(d.requestedAmount, d.currency, locale)}</td>
+              <td className={cell}>{td(`status.${d.status}`)}</td>
+              <td className={`${cell} text-xs text-stone-500`}>{dateTime(d.createdAt, locale)}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    );
   } else {
     const events = await api<AuditEvent[]>('/admin/audit');
     content = (
@@ -198,7 +226,23 @@ export default async function AdminPage({ searchParams }: PageProps<'/[locale]/a
           </div>
         ))}
       </div>
-      <nav className="flex gap-2">
+      {sales && (
+        <div className="grid grid-cols-2 gap-3 lg:grid-cols-3">
+          <div className="card p-5">
+            <p className="text-sm text-stone-500">{t('gmv')}</p>
+            <p className="mt-1 text-2xl font-bold">{money(sales.gmvCop, 'COP', locale)}</p>
+          </div>
+          <div className="card p-5">
+            <p className="text-sm text-stone-500">{t('commission')}</p>
+            <p className="mt-1 text-2xl font-bold">{money(sales.commissionCop, 'COP', locale)}</p>
+          </div>
+          <div className="card p-5">
+            <p className="text-sm text-stone-500">{t('orders')}</p>
+            <p className="mt-1 text-2xl font-bold">{sales.orders}</p>
+          </div>
+        </div>
+      )}
+      <nav className="flex flex-wrap gap-2">
         {TABS.map((x) => (
           <Link
             key={x}
