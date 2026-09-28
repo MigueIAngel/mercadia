@@ -29,7 +29,7 @@ export interface EventBusOptions {
   maxAttempts?: number;
 }
 
-type Handler<T extends EventType> = (event: EventEnvelope<T>) => Promise<void>;
+type Handler<T extends EventType> = (event: EventEnvelope<T>) => Promise<unknown>;
 
 type XReadGroupReply = [string, [string, string[]][]][] | null;
 
