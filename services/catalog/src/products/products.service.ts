@@ -357,6 +357,34 @@ export class ProductsService implements OnModuleInit {
     return items.map((p) => this.summary(p, currency));
   }
 
+  /**
+   * Searchable text of active products, for the AI service's embeddings. With `ids`, returns
+   * those products whatever their status, so the caller can drop the unpublished ones.
+   */
+  async export(ids?: string[]) {
+    const filter: QueryFilter<Product> = ids?.length ? { _id: { $in: ids } } : { status: 'active' };
+    const rows = await this.products
+      .find(filter)
+      .select({
+        slug: 1,
+        title: 1,
+        description: 1,
+        brand: 1,
+        category: 1,
+        subcategory: 1,
+        tags: 1,
+        storeId: 1,
+        storeName: 1,
+        priceUsd: 1,
+        ratingAvg: 1,
+        salesCount: 1,
+        status: 1,
+        updatedAt: 1,
+      })
+      .lean();
+    return rows.map(({ _id, ...rest }) => ({ id: _id, ...rest }));
+  }
+
   /** Authoritative prices and availability for checkout (called by orders). */
   async quote(items: QuoteItemDto[]) {
     const products = await this.products

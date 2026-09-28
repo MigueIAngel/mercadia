@@ -182,6 +182,26 @@ describe('Catalog service (e2e)', () => {
         storeId: product.storeId,
       });
     });
+
+    it('exports searchable product text for the AI service, only with the internal key', async () => {
+      await http().get('/internal/products/export').expect(403);
+      const all = await http()
+        .get('/internal/products/export')
+        .set('x-internal-key', 'dev-internal-key')
+        .expect(200);
+      expect(all.body.every((p: { status: string }) => p.status === 'active')).toBe(true);
+      const one = await http()
+        .get(`/internal/products/export?ids=${product.id}`)
+        .set('x-internal-key', 'dev-internal-key')
+        .expect(200);
+      expect(one.body).toHaveLength(1);
+      expect(one.body[0]).toMatchObject({
+        id: product.id,
+        title: product.title,
+        priceUsd: product.priceUsd,
+      });
+      expect(one.body[0].description).toEqual(expect.any(String));
+    });
   });
 
   describe('seller center', () => {
