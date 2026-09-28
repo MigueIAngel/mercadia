@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getLocale, getTranslations } from 'next-intl/server';
 import { ProductCard, ProductGrid } from '@/components/ProductCard';
+import { Rating } from '@/components/Rating';
 import { api, ApiError, currency } from '@/lib/api';
 import type { SearchResult, StoreSummary } from '@/lib/types';
 
@@ -26,12 +27,15 @@ export default async function StorePage({ params }: PageProps<'/[locale]/s/[slug
   const store = await loadStore(slug);
   const t = await getTranslations('store');
   const locale = await getLocale();
-  const products = await api<SearchResult>(
-    `/products?store=${slug}&limit=48&currency=${await currency()}`,
-    {
+  const [products, reputation] = await Promise.all([
+    api<SearchResult>(`/products?store=${slug}&limit=48&currency=${await currency()}`, {
       auth: false,
-    },
-  );
+    }),
+    api<{ avg: number; count: number; replyRate: number }>(`/reputation/stores/${store.id}`, {
+      auth: false,
+      revalidate: 60,
+    }).catch(() => null),
+  ]);
   return (
     <div>
       <section
@@ -54,6 +58,14 @@ export default async function StorePage({ params }: PageProps<'/[locale]/s/[slug
               {store.createdAt &&
                 ` · ${t('since', { date: new Intl.DateTimeFormat(locale, { month: 'long', year: 'numeric' }).format(new Date(store.createdAt)) })}`}
             </p>
+            {reputation && reputation.count > 0 && (
+              <p className="mt-2 flex flex-wrap items-center gap-2 text-sm">
+                <Rating value={reputation.avg} count={reputation.count} />
+                <span className="text-stone-500">
+                  {t('replyRate', { percent: Math.round(reputation.replyRate * 100) })}
+                </span>
+              </p>
+            )}
           </div>
         </div>
       </section>
