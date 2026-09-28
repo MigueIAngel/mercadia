@@ -19,7 +19,7 @@ services:
       POSTGRES_USER: mercadia
       POSTGRES_PASSWORD: mercadia
       POSTGRES_DB: mercadia
-    ports: ["5432:5432"]
+    ports: ["5433:5432"] # 5433 so it does not clash with a local PostgreSQL
     volumes:
       - ./deploy/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
       - pgdata:/var/lib/postgresql/data
