@@ -1,0 +1,20 @@
+{
+  "name": "@mercadia/demo-data",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Deterministic demo data shared by every service's seed (users, stores, products, reviews)",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": ["dist", "data"],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "vitest run"
+  }
+}
