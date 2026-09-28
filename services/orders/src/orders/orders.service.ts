@@ -226,6 +226,7 @@ export class OrdersService {
       buyerEmail: order.buyerEmail,
       status: order.status,
       currency: order.currency,
+      fxRate: order.fxRate,
       total: order.total,
       paymentDeadline: order.paymentDeadline,
       sellers: order.sellerOrders.map((s) => ({
