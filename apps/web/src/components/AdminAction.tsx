@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from '@/i18n/navigation';
 import { call } from '@/lib/client';
+import { Spinner } from '@/components/ui/Spinner';
 
 export function AdminAction({
   path,
@@ -30,8 +31,9 @@ export function AdminAction({
           setBusy(false);
         }
       }}
-      className={`rounded-full px-3 py-1 text-xs font-semibold ring-1 ${danger ? 'text-rose-700 ring-rose-200 hover:bg-rose-50' : 'text-emerald-700 ring-emerald-200 hover:bg-emerald-50'}`}
+      className={`rounded-full px-3 py-1 text-xs font-semibold ring-1 ${danger ? 'text-rose-700 ring-rose-200 hover:bg-rose-50' : 'text-emerald-700 ring-emerald-200 hover:bg-emerald-50'} inline-flex items-center gap-1`}
     >
+      {busy && <Spinner className="h-3 w-3" />}
       {label}
     </button>
   );

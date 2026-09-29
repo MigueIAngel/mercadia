@@ -4,6 +4,7 @@ import { Sparkles } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { call } from '@/lib/client';
+import { Spinner } from '@/components/ui/Spinner';
 
 export interface CopyDraft {
   title: string;
@@ -104,6 +105,7 @@ export function CopywriterPanel({
           onClick={write}
           className="btn-accent px-4 py-2 text-sm"
         >
+          {busy && <Spinner />}
           {busy ? t('writing') : t('write')}
         </button>
       </div>

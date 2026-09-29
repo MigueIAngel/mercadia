@@ -48,6 +48,13 @@ async function handle(request: NextRequest, { params }: { params: Promise<{ path
     return response;
   }
 
+  // Name or photo changed: renew the access token so the header shows them right away.
+  if (upstream.ok && request.method === 'PATCH' && path.join('/') === 'users/me' && refresh) {
+    // The refresh token rotates: use the new one if this request already renewed it.
+    renewed =
+      (await refreshTokens(renewed?.refreshToken ?? refresh, clientHeadersOf(request))) ?? renewed;
+  }
+
   const response = new NextResponse(upstream.status === 204 ? null : upstream.body, {
     status: upstream.status,
     headers: { 'Content-Type': upstream.headers.get('content-type') ?? 'application/json' },

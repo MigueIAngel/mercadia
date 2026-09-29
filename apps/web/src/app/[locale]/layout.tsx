@@ -6,6 +6,8 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { AssistantWidget } from '@/components/AssistantWidget';
 import { Footer } from '@/components/Footer';
 import { Header } from '@/components/Header';
+import { NavigationProgress } from '@/components/ui/NavigationProgress';
+import { Toaster } from '@/components/ui/Toaster';
 import { routing } from '@/i18n/routing';
 import { currency } from '@/lib/api';
 import '../globals.css';
@@ -34,10 +36,12 @@ export default async function LocaleLayout({ children, params }: LayoutProps<'/[
     <html lang={locale} className={`${sans.variable} ${serif.variable}`}>
       <body className="flex min-h-screen flex-col">
         <NextIntlClientProvider>
+          <NavigationProgress />
           <Header />
           <main className="flex-1">{children}</main>
           <Footer />
           <AssistantWidget currency={await currency()} />
+          <Toaster />
         </NextIntlClientProvider>
       </body>
     </html>

@@ -5,10 +5,13 @@ import { useFormatter, useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { Rating } from '@/components/Rating';
 import { call } from '@/lib/client';
+import { Avatar } from '@/components/ui/Avatar';
+import { Spinner } from '@/components/ui/Spinner';
 
 export interface ReviewView {
   _id: string;
   authorName: string;
+  authorAvatar?: string | null;
   rating: number;
   title: string;
   comment: string;
@@ -91,6 +94,7 @@ function ReviewForm({ productId, onCreated }: { productId: string; onCreated: ()
       />
       {error && <p className="text-sm text-rose-600">{error}</p>}
       <button disabled={busy} className="btn-primary px-4 py-2 text-sm">
+        {busy && <Spinner />}
         {t('publish')}
       </button>
     </form>
@@ -205,7 +209,8 @@ export function Reviews({
                 {r.title && <h3 className="font-semibold">{r.title}</h3>}
               </div>
               <p className="mt-1 flex flex-wrap items-center gap-2 text-xs text-stone-500">
-                <span>{r.authorName}</span>
+                <Avatar name={r.authorName} src={r.authorAvatar} size={20} className="!ring-0" />
+                <span className="font-medium text-stone-700">{r.authorName}</span>
                 <span>·</span>
                 <time dateTime={r.createdAt}>
                   {format.dateTime(new Date(r.createdAt), { dateStyle: 'medium' })}

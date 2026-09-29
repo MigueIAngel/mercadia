@@ -5,6 +5,8 @@ import { useTranslations } from 'next-intl';
 import { useMemo, useState } from 'react';
 import { useRouter } from '@/i18n/navigation';
 import type { Variant } from '@/lib/types';
+import { toast } from '@/lib/toast';
+import { Spinner } from '@/components/ui/Spinner';
 
 interface Props {
   productId: string;
@@ -53,6 +55,7 @@ export function ProductPurchase({ productId, options, variants }: Props) {
       return;
     }
     setState('added');
+    if (!goToCart) toast.success(t('addedToast', { quantity }));
     router.refresh();
     if (goToCart) router.push('/cart');
     else setTimeout(() => setState('idle'), 2000);
@@ -77,9 +80,9 @@ export function ProductPurchase({ productId, options, variants }: Props) {
                   type="button"
                   disabled={!available}
                   onClick={() => setSelected((s) => ({ ...s, [option.name]: value }))}
-                  className={`min-w-12 rounded-xl border px-3 py-2 text-sm font-medium transition ${
+                  className={`min-w-12 rounded-xl border px-3 py-2 text-sm font-medium transition active:scale-95 ${
                     active
-                      ? 'border-ink bg-ink text-white'
+                      ? 'border-ink bg-ink text-white shadow-md'
                       : 'border-stone-300 bg-white hover:border-ink'
                   } disabled:cursor-not-allowed disabled:opacity-40 disabled:line-through`}
                 >
@@ -111,7 +114,11 @@ export function ProductPurchase({ productId, options, variants }: Props) {
           >
             <Minus className="h-4 w-4" />
           </button>
-          <span className="w-8 text-center font-semibold" aria-live="polite">
+          <span
+            key={quantity}
+            className="w-8 animate-pop text-center font-semibold"
+            aria-live="polite"
+          >
             {quantity}
           </span>
           <button
@@ -127,9 +134,15 @@ export function ProductPurchase({ productId, options, variants }: Props) {
           type="button"
           disabled={stock === 0 || state === 'busy'}
           onClick={() => add(false)}
-          className="btn-primary flex-1 py-3"
+          className={`btn-primary group flex-1 py-3 ${state === 'added' ? '!bg-emerald-600' : ''}`}
         >
-          {state === 'added' ? <Check className="h-4 w-4" /> : <ShoppingCart className="h-4 w-4" />}
+          {state === 'busy' ? (
+            <Spinner />
+          ) : state === 'added' ? (
+            <Check className="h-4 w-4 animate-pop" />
+          ) : (
+            <ShoppingCart className="h-4 w-4 transition-transform group-hover:-rotate-12" />
+          )}
           {state === 'added' ? t('added') : t('addToCart')}
         </button>
         <button
@@ -141,7 +154,7 @@ export function ProductPurchase({ productId, options, variants }: Props) {
           {t('buyNow')}
         </button>
       </div>
-      {state === 'error' && <p className="text-sm text-rose-600">{error}</p>}
+      {state === 'error' && <p className="animate-shake text-sm text-rose-600">{error}</p>}
     </div>
   );
 }

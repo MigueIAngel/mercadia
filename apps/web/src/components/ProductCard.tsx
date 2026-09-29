@@ -19,8 +19,8 @@ export async function ProductCard({
   const off = discountPercent(product.price, product.compareAt);
   const href = `/p/${product.slug}`;
   return (
-    <article className="group relative flex flex-col overflow-hidden rounded-3xl bg-white shadow-sm ring-1 ring-stone-200 transition hover:-translate-y-1 hover:shadow-xl">
-      <Link href={href} className="relative block aspect-square bg-stone-100">
+    <article className="group relative flex h-full flex-col overflow-hidden rounded-3xl bg-white shadow-sm ring-1 ring-stone-200 transition duration-300 hover:-translate-y-1.5 hover:shadow-xl hover:ring-stone-300">
+      <Link href={href} className="relative block aspect-square overflow-hidden bg-stone-100">
         {product.image && (
           <Image
             src={product.image}
@@ -28,11 +28,14 @@ export async function ProductCard({
             fill
             sizes="(min-width: 1024px) 25vw, (min-width: 640px) 33vw, 50vw"
             priority={priority}
-            className="object-contain p-6 transition duration-300 group-hover:scale-105"
+            className="object-contain p-6 transition duration-500 ease-out group-hover:scale-110"
           />
         )}
+        <span className="absolute inset-x-3 bottom-3 translate-y-3 rounded-full bg-ink/85 py-2 text-center text-xs font-semibold text-white opacity-0 backdrop-blur transition duration-300 group-hover:translate-y-0 group-hover:opacity-100">
+          {t('view')}
+        </span>
         {off > 0 && (
-          <span className="absolute top-3 left-3 rounded-full bg-accent-500 px-2.5 py-1 text-xs font-bold text-white">
+          <span className="absolute top-3 left-3 rounded-full bg-accent-500 px-2.5 py-1 text-xs font-bold text-white shadow-md transition group-hover:scale-110 group-hover:-rotate-3">
             {t('off', { percent: off })}
           </span>
         )}

@@ -159,7 +159,16 @@ export function Messages({
             </div>
           )}
           <ul className="min-h-0 flex-1 overflow-y-auto">
-            {list === null && <li className="p-4 text-sm text-stone-500">…</li>}
+            {list === null &&
+              [0, 1, 2, 3].map((i) => (
+                <li key={i} className="flex gap-3 p-4">
+                  <span className="skeleton h-10 w-10 shrink-0 rounded-full" />
+                  <span className="flex-1 space-y-2">
+                    <span className="skeleton block h-3 w-1/2" />
+                    <span className="skeleton block h-3 w-3/4" />
+                  </span>
+                </li>
+              ))}
             {list?.length === 0 && <li className="p-4 text-sm text-stone-500">{t('empty')}</li>}
             {list?.map((c) => (
               <li key={c._id}>

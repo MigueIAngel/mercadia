@@ -7,6 +7,7 @@ import { useRouter } from '@/i18n/navigation';
 import { call } from '@/lib/client';
 import type { Category, ProductDetail } from '@/lib/types';
 import { CopywriterPanel } from './CopywriterPanel';
+import { Spinner } from '@/components/ui/Spinner';
 
 interface Row {
   sku?: string;
@@ -368,6 +369,7 @@ export function ProductForm({
       )}
       <div className="flex flex-wrap gap-3">
         <button disabled={busy || images.length === 0} className="btn-accent">
+          {busy && <Spinner />}
           {product ? t('fields.save') : t('fields.publish')}
         </button>
         {(!product || product.status === 'draft') && (
