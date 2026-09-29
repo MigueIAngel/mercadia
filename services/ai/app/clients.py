@@ -10,6 +10,7 @@ from __future__ import annotations
 import logging
 import time
 from typing import Any
+from urllib.parse import urlencode
 
 import httpx
 
@@ -82,6 +83,23 @@ class Services:
         rate = float(((res or {}).get("rates") or {}).get("COP") or 4000)
         self._rate = (rate, now)
         return rate
+
+    async def keyword_search(
+        self,
+        query: str,
+        currency: str,
+        limit: int,
+        category: str | None = None,
+        max_price_minor: float | None = None,
+    ) -> list[dict]:
+        """Catalog's own search (Atlas Search): the fallback when embeddings are unavailable."""
+        params = {"q": query, "currency": currency, "limit": str(limit)}
+        if category:
+            params["category"] = category
+        if max_price_minor:
+            params["maxPrice"] = str(int(max_price_minor // 100))  # catalog takes major units
+        res = await self._get(f"{self.cfg.catalog_url}/products?{urlencode(params)}")
+        return (res or {}).get("items", [])
 
     async def bestsellers(self, currency: str = "COP", limit: int = 8) -> list[dict]:
         res = await self._get(

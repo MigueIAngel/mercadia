@@ -140,6 +140,9 @@ class FakeServices:
             return httpx.Response(200, json=rows)
         if path == "/currency/rates":
             return httpx.Response(200, json={"base": "USD", "rates": {"USD": 1, "COP": RATE}})
+        if path == "/products" and "q" in query:  # keyword search (fallback): best sellers
+            ranked = sorted(self.products, key=lambda p: -p["salesCount"])
+            return httpx.Response(200, json={"items": [summary(p, "COP") for p in ranked]})
         if path == "/products" and query.get("sort") == ["bestselling"]:
             currency = query.get("currency", ["COP"])[0]
             ranked = sorted(self.products, key=lambda p: -p["salesCount"])

@@ -67,6 +67,9 @@ class VectorStore:
 
     async def ensure_index(self) -> None:
         try:
+            # Search indexes need an existing collection (a new embedder starts with none).
+            if self.col.name not in await self.col.database.list_collection_names():
+                await self.col.database.create_collection(self.col.name)
             existing = [i async for i in await self.col.list_search_indexes(INDEX)]
             if not existing:
                 await self.col.create_search_index(

@@ -74,3 +74,22 @@ async def test_gemini_failure_falls_back_to_the_local_assistant():
     res = await assistant.reply([], "hola", None, "COP", "es")
     assert res["provider"] == "local"
     assert res["reply"].startswith("¡Hola!")
+
+
+async def test_an_overloaded_model_falls_back_to_the_second_one():
+    class Overloaded:
+        def __init__(self):
+            self.models = []
+
+        async def generate_content(self, model, contents, config):
+            self.models.append(model)
+            if model == "busy-model":
+                raise RuntimeError("503 UNAVAILABLE: high demand")
+            return SimpleNamespace(function_calls=None, text="¡Hola! ¿Qué buscas?")
+
+    models = Overloaded()
+    assistant = Assistant(FakeTools(), "", "busy-model", "spare-model")
+    assistant.client = SimpleNamespace(aio=SimpleNamespace(models=models))
+    res = await assistant.reply([], "hola", None, "COP", "es")
+    assert res["provider"] == "gemini"
+    assert models.models == ["busy-model", "spare-model"]

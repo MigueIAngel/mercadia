@@ -2,10 +2,14 @@
 
 from __future__ import annotations
 
+import logging
+
 from .auth import User
 from .clients import Services
 from .embeddings import Embedder
 from .vectors import SearchFilter, VectorStore
+
+log = logging.getLogger("ai.search")
 
 
 def to_usd_cents(amount: float, currency: str, usd_to_cop: float) -> int:
@@ -51,7 +55,12 @@ class SearchService:
         max_price: float | None = None,
         min_price: float | None = None,
     ) -> list[dict]:
-        vector = await self.embedder.embed_query(query)
+        try:
+            vector = await self.embedder.embed_query(query)
+        except Exception as error:  # e.g. the embeddings quota is exhausted
+            log.warning("query embedding failed, using keyword search: %s", str(error)[:120])
+            items = await self.services.keyword_search(query, currency, limit, category, max_price)
+            return [{**p, "score": None} for p in items]
         where = await self.filter_for(currency, category, max_price, min_price)
         hits = await self.store.search(vector, limit, where)
         return await self._hydrate(hits, currency)

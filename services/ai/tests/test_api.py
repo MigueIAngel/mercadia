@@ -151,3 +151,18 @@ def test_catalog_events_keep_the_index_fresh(client, fake):
     assert after is None
     assert dlq == 1
     fake.products.pop()
+
+
+def test_search_falls_back_to_keywords_when_embeddings_fail(client, fake):
+    original = state.search.embedder.embed_query
+
+    async def broken(_text):
+        raise RuntimeError("429 RESOURCE_EXHAUSTED")
+
+    state.search.embedder.embed_query = broken
+    try:
+        res = client.get("/ai/search", params={"q": "phone"}).json()
+    finally:
+        state.search.embedder.embed_query = original
+    assert "GET /products" in fake.calls
+    assert [p["id"] for p in res["items"]] == ["p-earbuds", "p-perfume", "p-phone", "p-sofa"]

@@ -77,3 +77,12 @@ async def test_copywriter_template_uses_only_the_sellers_notes():
     assert out["bullets"] == ["Luz LED cálida", "Brazo ajustable", "USB-C"]
     assert "luz led cálida" in out["description"]
     assert "lampara" in out["tags"] or "lámpara" in out["tags"]
+
+
+def test_rate_limit_hint_is_parsed_and_capped():
+    from app.embeddings import retry_after
+
+    assert retry_after(RuntimeError("429 RESOURCE_EXHAUSTED ... Please retry in 14.3s")) == 15.3
+    assert retry_after(RuntimeError("429 RESOURCE_EXHAUSTED")) == 30
+    assert retry_after(RuntimeError("retry in 900s 429")) == 65
+    assert retry_after(RuntimeError("500 INTERNAL")) is None

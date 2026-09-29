@@ -9,6 +9,7 @@ switching providers never mixes incompatible vectors.
 
 from __future__ import annotations
 
+import asyncio
 import hashlib
 import logging
 import math
@@ -262,13 +263,25 @@ class GeminiEmbedder:
         from google.genai import types
 
         out: list[list[float]] = []
-        for start in range(0, len(texts), 100):
-            batch = texts[start : start + 100]
-            res = await self.client.aio.models.embed_content(
-                model=self.model,
-                contents=batch,
-                config=types.EmbedContentConfig(task_type=task, output_dimensionality=self.dims),
-            )
+        # Small batches: the free tier counts every text against a per-minute quota.
+        for start in range(0, len(texts), 20):
+            batch = texts[start : start + 20]
+            for attempt in range(6):
+                try:
+                    res = await self.client.aio.models.embed_content(
+                        model=self.model,
+                        contents=batch,
+                        config=types.EmbedContentConfig(
+                            task_type=task, output_dimensionality=self.dims
+                        ),
+                    )
+                    break
+                except Exception as error:
+                    wait = retry_after(error)
+                    if wait is None or attempt == 5 or task == "RETRIEVAL_QUERY":
+                        raise
+                    log.info("embedding quota reached, retrying in %.0f s", wait)
+                    await asyncio.sleep(wait)
             for emb in res.embeddings or []:
                 values = list(emb.values or [])
                 norm = math.sqrt(sum(v * v for v in values)) or 1.0
@@ -280,6 +293,15 @@ class GeminiEmbedder:
 
     async def embed_query(self, text: str) -> list[float]:
         return (await self._embed([text], "RETRIEVAL_QUERY"))[0]
+
+
+def retry_after(error: Exception) -> float | None:
+    """Seconds to wait on a Gemini rate limit (429), from its 'retry in Ns' hint; else None."""
+    text = str(error)
+    if "429" not in text and "RESOURCE_EXHAUSTED" not in text:
+        return None
+    match = re.search(r"retry in ([0-9.]+)s", text)
+    return min(float(match.group(1)) + 1, 65) if match else 30
 
 
 def product_text(p: dict) -> str:

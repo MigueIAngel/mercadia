@@ -23,6 +23,7 @@ class Settings:
     engagement_url: str
     gemini_api_key: str
     gemini_model: str
+    gemini_fallback_model: str
     embedding_model: str
     consume_events: bool
     index_on_boot: bool
@@ -45,6 +46,7 @@ def settings() -> Settings:
         engagement_url=env("ENGAGEMENT_URL", "http://localhost:4006"),
         gemini_api_key=env("GEMINI_API_KEY"),
         gemini_model=env("GEMINI_MODEL", "gemini-3.5-flash-lite"),
+        gemini_fallback_model=env("GEMINI_FALLBACK_MODEL", "gemini-3.5-flash"),
         embedding_model=env("GEMINI_EMBEDDING_MODEL", "gemini-embedding-001"),
         consume_events=env("CONSUME_EVENTS", "true") == "true",
         index_on_boot=env("INDEX_ON_BOOT", "true") == "true",
