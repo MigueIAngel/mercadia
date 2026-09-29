@@ -18,7 +18,7 @@ export function configureGateway(app: INestApplication) {
     exposedHeaders: ['x-request-id', 'Retry-After'],
   });
   app.use(app.get(RateLimiter).middleware());
-  const proxies = createProxies(app.get(ServiceRegistry));
+  const proxies = createProxies(app.get(ServiceRegistry), config.internalKey);
   app.use(proxies.middleware);
   app.enableShutdownHooks();
 

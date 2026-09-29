@@ -3,9 +3,9 @@
 The only public entry point (`/api/*`). It forwards each resource to the service that owns it
 and adds the cross-cutting concerns.
 
-| | |
-| --- | --- |
-| Port | 4000 |
+|               |                                                  |
+| ------------- | ------------------------------------------------ |
+| Port          | 4000                                             |
 | Routing table | [`src/routing/routes.ts`](src/routing/routes.ts) |
 
 - **Resource routing**: `/api/products` → catalog, `/api/auth` → identity, `/api/realtime` →

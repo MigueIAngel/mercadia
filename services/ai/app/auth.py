@@ -19,7 +19,13 @@ _jwks: jwt.PyJWKClient | None = None
 def jwks() -> jwt.PyJWKClient:
     global _jwks
     if _jwks is None:
-        _jwks = jwt.PyJWKClient(settings().jwks_url, cache_keys=True, lifespan=3600)
+        # The key header matters when JWKS is reached through the gateway's `_svc` route.
+        _jwks = jwt.PyJWKClient(
+            settings().jwks_url,
+            cache_keys=True,
+            lifespan=3600,
+            headers={"x-internal-key": settings().internal_key},
+        )
     return _jwks
 
 
