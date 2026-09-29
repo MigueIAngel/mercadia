@@ -11,7 +11,7 @@ import { drizzle, type NodePgDatabase } from 'drizzle-orm/node-postgres';
 import { migrate } from 'drizzle-orm/node-postgres/migrator';
 import { fileURLToPath } from 'node:url';
 import pg from 'pg';
-import { EventBus, HealthRegistry, OutboxRelay } from '@mercadia/service-kit';
+import { createPgPool, EventBus, HealthRegistry, OutboxRelay } from '@mercadia/service-kit';
 import { CONFIG, type OrdersConfig } from '../config.js';
 import * as schema from './schema.js';
 
@@ -53,12 +53,7 @@ class DatabaseLifecycle implements OnModuleInit, OnApplicationShutdown {
     {
       provide: POOL,
       inject: [CONFIG],
-      useFactory: (config: OrdersConfig) =>
-        new pg.Pool({
-          connectionString: config.databaseUrl,
-          // The demo bundle runs four pools against one small server: it lowers this.
-          max: Number(process.env.PG_POOL_MAX ?? 10),
-        }),
+      useFactory: (config: OrdersConfig) => createPgPool(config.databaseUrl, 'orders'),
     },
     { provide: DB, inject: [POOL], useFactory: (pool: pg.Pool) => drizzle(pool, { schema }) },
     DatabaseLifecycle,
