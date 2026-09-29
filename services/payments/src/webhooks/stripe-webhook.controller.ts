@@ -40,12 +40,18 @@ export class StripeWebhookController {
     if (!(this.provider instanceof StripeProvider) || !this.config.stripeWebhookSecret) {
       throw new BadRequestException('Stripe is not configured');
     }
-    let event: Stripe.Event;
-    try {
-      event = this.provider.parseWebhook(req.rawBody!, signature, this.config.stripeWebhookSecret);
-    } catch {
-      throw new BadRequestException('Invalid signature');
+    // Platform events (payments) and Connect events (seller accounts) come from two Stripe
+    // endpoints with their own signing secrets: STRIPE_WEBHOOK_SECRET may list both.
+    let event: Stripe.Event | undefined;
+    for (const secret of this.config.stripeWebhookSecret.split(',')) {
+      try {
+        event = this.provider.parseWebhook(req.rawBody!, signature, secret.trim());
+        break;
+      } catch {
+        // try the next secret
+      }
     }
+    if (!event) throw new BadRequestException('Invalid signature');
     const inserted = await this.db
       .insert(webhookEvents)
       .values({ id: event.id, type: event.type })
