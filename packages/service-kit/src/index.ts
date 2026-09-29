@@ -9,3 +9,4 @@ export * from './health/health.js';
 export * from './metrics.js';
 export * from './logging.js';
 export * from './bootstrap.js';
+export * from './db/pg-pool.js';
