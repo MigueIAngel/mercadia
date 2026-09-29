@@ -24,18 +24,20 @@ transport_override: httpx.AsyncBaseTransport | None = None
 class Services:
     def __init__(self, cfg: Settings, transport: httpx.AsyncBaseTransport | None = None):
         self.cfg = cfg
-        self.http = httpx.AsyncClient(timeout=8.0, transport=transport or transport_override)
+        # Every call carries the internal key: in the free demo the neighbours are reached
+        # through the gateway's key-protected /api/_svc/<service> route.
+        self.http = httpx.AsyncClient(
+            timeout=8.0,
+            transport=transport or transport_override,
+            headers={"x-internal-key": cfg.internal_key},
+        )
         self._rate: tuple[float, float] | None = None
 
     async def close(self) -> None:
         await self.http.aclose()
 
-    async def _get(self, url: str, token: str | None = None, internal: bool = False) -> Any:
-        headers = {}
-        if token:
-            headers["Authorization"] = f"Bearer {token}"
-        if internal:
-            headers["x-internal-key"] = self.cfg.internal_key
+    async def _get(self, url: str, token: str | None = None) -> Any:
+        headers = {"Authorization": f"Bearer {token}"} if token else {}
         try:
             res = await self.http.get(url, headers=headers)
         except httpx.HTTPError as error:
@@ -50,9 +52,7 @@ class Services:
 
     async def export_products(self, ids: list[str] | None = None) -> list[dict]:
         query = f"?ids={','.join(ids)}" if ids else ""
-        rows = await self._get(
-            f"{self.cfg.catalog_url}/internal/products/export{query}", internal=True
-        )
+        rows = await self._get(f"{self.cfg.catalog_url}/internal/products/export{query}")
         return rows or []
 
     async def products_by_ids(self, ids: list[str], currency: str = "COP") -> list[dict]:

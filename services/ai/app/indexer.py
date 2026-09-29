@@ -80,7 +80,7 @@ class Indexer:
             products = await self.services.export_products()
             if not products:
                 log.warning("catalog export returned nothing; keeping the current index")
-                return {"indexed": 0, "removed": 0, "total": await self.store.count()}
+                return {"ok": False, "indexed": 0, "removed": 0, "total": await self.store.count()}
             known = await self.store.hashes()
             indexed = await self._embed(products, known)
             live = {p["id"] for p in products}
@@ -89,7 +89,7 @@ class Indexer:
             await self._refresh_metadata(products)
             total = await self.store.count()
             log.info("index sync: %d embedded, %d removed, %d total", indexed, len(stale), total)
-            return {"indexed": indexed, "removed": len(stale), "total": total}
+            return {"ok": True, "indexed": indexed, "removed": len(stale), "total": total}
 
     async def _refresh_metadata(self, products: list[dict]) -> None:
         # Price, rating and sales change often and don't affect the text: update them in place.

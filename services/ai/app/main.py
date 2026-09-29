@@ -29,9 +29,12 @@ from .vectors import VectorStore
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s %(message)s")
 log = logging.getLogger("ai")
 
-REQUESTS = Counter("http_requests_total", "HTTP requests", ["service", "method", "route", "status"])
-LATENCY = Histogram(
-    "http_request_duration_seconds", "HTTP request latency", ["service", "method", "route"]
+# Same name, labels and buckets as the Node services, so one Grafana dashboard covers all.
+HTTP_DURATION = Histogram(
+    "http_server_duration_seconds",
+    "HTTP request duration",
+    ["service", "method", "route", "status"],
+    buckets=[0.01, 0.05, 0.1, 0.25, 0.5, 1, 2, 5],
 )
 ASSISTANT = Counter("ai_assistant_replies_total", "Assistant replies", ["provider"])
 
@@ -58,8 +61,7 @@ async def _initial_index() -> None:
     # Catalog may still be starting (same container in the demo): retry for a while.
     for attempt in range(30):
         try:
-            result = await state.indexer.sync_all()
-            if result["total"]:
+            if (await state.indexer.sync_all())["ok"]:
                 return
         except Exception as error:
             log.warning("initial index attempt %d failed: %s", attempt + 1, error)
@@ -118,8 +120,9 @@ async def metrics_middleware(request: Request, call_next):
     route = request.scope.get("route")
     path = getattr(route, "path", "unmatched")
     if path not in ("/metrics", "/health"):
-        REQUESTS.labels("ai", request.method, path, response.status_code).inc()
-        LATENCY.labels("ai", request.method, path).observe(time.perf_counter() - started)
+        HTTP_DURATION.labels("ai", request.method, path, str(response.status_code)).observe(
+            time.perf_counter() - started
+        )
     return response
 
 
