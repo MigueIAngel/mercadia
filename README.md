@@ -16,11 +16,12 @@ API docs (all services): https://mercadia-api-p9fn.onrender.com/docs
 | Area | Features |
 | --- | --- |
 | Shopping | Catalog with variants, typo-tolerant search with facets (Atlas Search), COP/USD with live exchange rate and IVA, guest cart merged at sign-in, multi-store checkout with shipping rates per region |
-| Payments | Stripe test mode + Connect: one charge per order, separate transfers per seller held until delivery, refunds; a built-in simulator with Stripe's test cards when no key is set |
+| Payments | Stripe test mode + Connect: one charge per order, separate transfers per seller held until delivery, refunds; saved cards (Stripe SetupIntents, one-click pay, 3-D Secure) and a full-screen payment animation; a built-in simulator with Stripe's test cards when no key is set |
 | After the sale | Shipments with simulated carrier tracking, public tracking page, returns and disputes with seller deadlines and admin escalation |
 | Community | Verified-purchase reviews, store reputation and seller replies, real-time buyer–seller chat (Socket.IO), notifications in-app, live and by email, wishlist with price-drop alerts |
 | Sellers & admins | Seller center (products, orders, shipping labels, payouts, disputes, reviews, sales chart), admin console (users, stores, moderation, disputes, audit log, GMV) |
 | AI | Shopping assistant with Gemini function calling (searches the catalog, opens products, checks your orders and shipments), semantic search and recommendations with Atlas Vector Search, AI copywriter for sellers |
+| Experience | Profile photos (direct signed upload to Cloudinary), skeleton loaders, navigation progress bar, toasts, scroll reveal and micro-interactions (respecting reduced motion) |
 | Security | RS256 JWT with JWKS, rotating refresh tokens with reuse detection, TOTP 2FA with recovery codes, Google sign-in, RBAC, account lockout, audit log, httpOnly-cookie BFF |
 
 ## Architecture

@@ -1,5 +1,11 @@
 import Stripe from 'stripe';
-import { PaymentProvider, type IntentRequest, type TransferRequest } from './payment-provider.js';
+import {
+  PaymentProvider,
+  type ChargeResult,
+  type IntentRequest,
+  type SavedCard,
+  type TransferRequest,
+} from './payment-provider.js';
 
 /**
  * Stripe in test mode. Marketplace flow = "separate charges and transfers": the buyer pays the
@@ -78,6 +84,84 @@ export class StripeProvider extends PaymentProvider {
       type: 'account_onboarding',
     });
     return { accountId: account.id, url: link.url };
+  }
+
+  async createCustomer(userId: string, email: string) {
+    const customer = await this.stripe.customers.create(
+      { email, metadata: { userId } },
+      { idempotencyKey: `customer-${userId}` },
+    );
+    return customer.id;
+  }
+
+  async createSetup(customerId: string) {
+    const setup = await this.stripe.setupIntents.create({
+      customer: customerId,
+      payment_method_types: ['card'],
+      usage: 'on_session',
+    });
+    return { clientSecret: setup.client_secret };
+  }
+
+  async completeSetup(setupRef: string, customerId: string): Promise<SavedCard> {
+    const setup = await this.stripe.setupIntents.retrieve(setupRef, {
+      expand: ['payment_method'],
+    });
+    const method = setup.payment_method as Stripe.PaymentMethod | null;
+    if (setup.customer !== customerId || setup.status !== 'succeeded' || !method?.card) {
+      throw new Error('The card was not saved');
+    }
+    return {
+      ref: method.id,
+      brand: method.card.brand,
+      last4: method.card.last4,
+      expMonth: method.card.exp_month,
+      expYear: method.card.exp_year,
+    };
+  }
+
+  /** Demo seed: Stripe's test token saves a real test Visa to the customer. */
+  async attachTestCard(customerId: string): Promise<SavedCard> {
+    const method = await this.stripe.paymentMethods.attach('pm_card_visa', {
+      customer: customerId,
+    });
+    return {
+      ref: method.id,
+      brand: method.card!.brand,
+      last4: method.card!.last4,
+      expMonth: method.card!.exp_month,
+      expYear: method.card!.exp_year,
+    };
+  }
+
+  async detach(methodRef: string) {
+    await this.stripe.paymentMethods.detach(methodRef).catch(() => undefined);
+  }
+
+  async chargeSaved(
+    intentRef: string,
+    customerId: string,
+    method: Pick<SavedCard, 'ref' | 'brand' | 'last4'>,
+    returnUrl: string,
+  ): Promise<ChargeResult> {
+    try {
+      // A saved card belongs to a customer, so the intent must name it before confirming.
+      await this.stripe.paymentIntents.update(intentRef, { customer: customerId });
+      const intent = await this.stripe.paymentIntents.confirm(intentRef, {
+        payment_method: method.ref,
+        return_url: returnUrl,
+      });
+      if (intent.status === 'succeeded')
+        return { status: 'succeeded', card: { brand: method.brand, last4: method.last4 } };
+      if (intent.status === 'requires_action' && intent.client_secret)
+        return { status: 'requires_action', clientSecret: intent.client_secret };
+      return { status: 'failed', reason: intent.last_payment_error?.code ?? intent.status };
+    } catch (error) {
+      const err = error as Stripe.errors.StripeError;
+      if (err.type === 'StripeCardError')
+        return { status: 'failed', reason: err.code ?? 'card_declined' };
+      throw error;
+    }
   }
 
   parseWebhook(payload: Buffer, signature: string, secret: string) {

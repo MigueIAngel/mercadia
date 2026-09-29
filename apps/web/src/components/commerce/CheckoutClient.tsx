@@ -8,6 +8,7 @@ import { useRouter } from '@/i18n/navigation';
 import { call } from '@/lib/client';
 import { money } from '@/lib/format';
 import type { Address, CartView } from '@/lib/types';
+import { Spinner } from '@/components/ui/Spinner';
 
 const FIELDS = ['label', 'fullName', 'phone', 'line1', 'line2', 'city', 'department'] as const;
 
@@ -21,10 +22,12 @@ export function CheckoutClient({ currency }: { currency: Currency }) {
   const [quote, setQuote] = useState<CartView | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
+  const [loaded, setLoaded] = useState(false);
 
   const loadAddresses = useCallback(async () => {
     const list = await call<Address[]>('/api/bff/addresses');
     setAddresses(list);
+    setLoaded(true);
     setAdding(list.length === 0);
     setSelected((s) => s || list.find((a) => a.isDefault)?.id || list[0]?.id || '');
   }, []);
@@ -87,10 +90,12 @@ export function CheckoutClient({ currency }: { currency: Currency }) {
     <div className="grid gap-8 lg:grid-cols-[1fr_380px]">
       <section className="card space-y-4 p-6">
         <h2 className="text-lg font-semibold">{t('address')}</h2>
-        {addresses.map((a) => (
+        {!loaded && [0, 1].map((i) => <div key={i} className="skeleton h-20 rounded-2xl" />)}
+        {addresses.map((a, i) => (
           <label
             key={a.id}
-            className={`flex cursor-pointer gap-3 rounded-2xl p-4 ring-1 ${a.id === selected ? 'bg-accent-50 ring-accent-500' : 'ring-stone-200'}`}
+            style={{ animationDelay: `${i * 60}ms` }}
+            className={`flex animate-fade-up cursor-pointer gap-3 rounded-2xl p-4 ring-1 transition ${a.id === selected ? 'bg-accent-50 ring-2 ring-accent-500' : 'ring-stone-200 hover:ring-stone-300'}`}
           >
             <input
               type="radio"
@@ -178,6 +183,7 @@ export function CheckoutClient({ currency }: { currency: Currency }) {
           onClick={place}
           className="btn-accent w-full py-3"
         >
+          {busy && <Spinner />}
           {busy ? t('placing') : t('place')}
         </button>
       </aside>

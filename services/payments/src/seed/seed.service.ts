@@ -2,10 +2,13 @@ import { Inject, Injectable, Logger, OnApplicationBootstrap } from '@nestjs/comm
 import { sql } from 'drizzle-orm';
 import type pg from 'pg';
 import { priceFromUsd } from '@mercadia/contracts';
-import { demoId, demoOrders, STORES } from '@mercadia/demo-data';
+import { BUYERS, demoId, demoOrders, STORES } from '@mercadia/demo-data';
 import { CONFIG, type PaymentsConfig } from '../config.js';
 import { DB, POOL, type Database } from '../db/database.module.js';
-import { payments } from '../db/schema.js';
+import { paymentMethods, payments } from '../db/schema.js';
+import { MethodsService } from '../methods/methods.service.js';
+import { PaymentProvider } from '../providers/payment-provider.js';
+import { StripeProvider } from '../providers/stripe.provider.js';
 
 const DEMO_RATE = 4000;
 const SHIPPING_COP = 1_200_000;
@@ -20,10 +23,39 @@ export class SeedService implements OnApplicationBootstrap {
     @Inject(DB) private readonly db: Database,
     @Inject(POOL) private readonly pool: pg.Pool,
     @Inject(CONFIG) private readonly config: PaymentsConfig,
+    private readonly provider: PaymentProvider,
+    private readonly methods: MethodsService,
   ) {}
 
   async onApplicationBootstrap() {
-    if (this.config.seed) await this.seed();
+    if (!this.config.seed) return;
+    await this.seed();
+    // Stripe calls must not delay the boot.
+    this.seedCards().catch((error) => this.logger.warn(`demo cards skipped: ${error.message}`));
+  }
+
+  /** Each demo buyer has a saved Visa, so "pay with a saved card" works out of the box. */
+  async seedCards() {
+    const [{ n }] = await this.db
+      .select({ n: sql<number>`count(*)::int` })
+      .from(paymentMethods)
+      .where(sql`${paymentMethods.provider} = ${this.provider.name}`);
+    if (n > 0) return;
+    for (const buyer of BUYERS) {
+      if (this.provider instanceof StripeProvider) {
+        const customer = await this.methods.customerOf({ sub: buyer.id, email: buyer.email });
+        await this.methods.store(buyer.id, await this.provider.attachTestCard(customer));
+      } else {
+        await this.methods.store(buyer.id, {
+          ref: `mock_pm_${buyer.id}`,
+          brand: 'visa',
+          last4: '4242',
+          expMonth: 12,
+          expYear: 2030,
+        });
+      }
+    }
+    this.logger.log('demo saved cards loaded');
   }
 
   async seed() {

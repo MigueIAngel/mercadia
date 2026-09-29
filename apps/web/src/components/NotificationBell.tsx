@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Link } from '@/i18n/navigation';
 import { call } from '@/lib/client';
 import { useRealtime } from '@/lib/realtime';
+import { PanelLoader } from '@/components/ui/Spinner';
 
 export interface AppNotification {
   _id: string;
@@ -91,7 +92,7 @@ export function NotificationBell({ initialUnread }: { initialUnread: number }) {
           <p className="border-b border-stone-100 px-4 py-3 text-sm font-semibold">{t('title')}</p>
           <div className="max-h-96 overflow-y-auto">
             {items === null ? (
-              <p className="px-4 py-6 text-center text-sm text-stone-500">…</p>
+              <PanelLoader className="py-6" />
             ) : items.length === 0 ? (
               <p className="px-4 py-6 text-center text-sm text-stone-500">{t('empty')}</p>
             ) : (

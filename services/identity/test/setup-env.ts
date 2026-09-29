@@ -6,6 +6,7 @@ process.env.IDENTITY_DATABASE_URL = `${base}/identity_test`;
 process.env.REDIS_URL = process.env.TEST_REDIS_URL ?? 'redis://localhost:6379/14';
 process.env.CONSUME_EVENTS = 'false';
 process.env.LOG_LEVEL = 'silent';
+process.env.IDENTITY_CLOUDINARY_URL = 'cloudinary://123456:cloud-secret@democloud';
 
 export async function resetDatabase() {
   const admin = new pg.Client({ connectionString: `${base}/postgres` });

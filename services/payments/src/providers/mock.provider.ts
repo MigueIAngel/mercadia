@@ -1,5 +1,5 @@
 import { randomUUID } from 'node:crypto';
-import { PaymentProvider } from './payment-provider.js';
+import { PaymentProvider, type ChargeResult, type SavedCard } from './payment-provider.js';
 
 export type MockOutcome = { ok: true; brand: string } | { ok: false; reason: string };
 
@@ -73,5 +73,23 @@ export class MockProvider extends PaymentProvider {
   }
   async onboarding(storeId: string) {
     return { accountId: `mock_acct_${storeId.slice(0, 8)}`, url: null };
+  }
+  async createCustomer(userId: string) {
+    return `mock_cus_${userId}`;
+  }
+  async createSetup() {
+    return { clientSecret: null };
+  }
+  async completeSetup(): Promise<never> {
+    throw new Error('The simulated processor saves cards directly');
+  }
+  async detach() {}
+  /** Saved test cards were validated when saved, so they always go through. */
+  async chargeSaved(
+    _intentRef: string,
+    _customerId: string,
+    method: Pick<SavedCard, 'brand' | 'last4'>,
+  ): Promise<ChargeResult> {
+    return { status: 'succeeded', card: { brand: method.brand, last4: method.last4 } };
   }
 }

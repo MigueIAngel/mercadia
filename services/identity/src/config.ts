@@ -20,6 +20,8 @@ export const config = () => ({
   refreshTtlDays: Number(serviceEnv(S, 'REFRESH_TOKEN_TTL_DAYS', '30')),
   googleClientId: optionalServiceEnv(S, 'GOOGLE_CLIENT_ID'),
   googleClientSecret: optionalServiceEnv(S, 'GOOGLE_CLIENT_SECRET'),
+  /** cloudinary://key:secret@cloud: signs the browser's direct avatar uploads. */
+  cloudinaryUrl: optionalServiceEnv(S, 'CLOUDINARY_URL'),
   demoLogin: serviceEnv(S, 'DEMO_LOGIN', 'true') === 'true',
   seed: serviceEnv(S, 'SEED_DEMO_DATA', 'true') === 'true',
   consumeEvents: serviceEnv(S, 'CONSUME_EVENTS', 'true') === 'true',

@@ -13,9 +13,14 @@ cart logic were recycled from [Shopfront](https://github.com/MigueIAngel/shopfro
   for the Socket.IO handshake (chat, notification bell).
 - **Pages**: home, search with facets and AI semantic fallback, product (variants, reviews,
   wishlist, ask the seller, AI similar products), stores with reputation, cart, checkout with
-  an address book, payment (Stripe Elements or test cards), orders with live tracking and
+  an address book, payment (saved cards, Stripe Elements or test cards) with a full-screen
+  processing / approved / declined animation, saved payment methods, profile photo upload
+  (cropped in the browser, straight to Cloudinary), orders with live tracking and
   disputes, messages, wishlist, account security (2FA, sessions, audit), seller center with
   the AI copywriter, admin console, and a floating AI shopping assistant.
+- **Motion**: skeleton loaders for every main route (`loading.tsx`), a navigation progress bar,
+  spinners on every pending action, toasts, scroll reveal and hover micro-interactions. All of
+  it respects `prefers-reduced-motion`.
 - Guest carts (`mc_cart` cookie) are merged into the account at sign-in; currency (COP/USD) and
   language are per-visitor preferences.
 

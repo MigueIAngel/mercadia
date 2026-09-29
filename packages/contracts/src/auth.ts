@@ -9,6 +9,8 @@ export interface AccessTokenClaims {
   roles: Role[];
   /** Present when the user owns a store. */
   storeId?: string;
+  /** Profile photo URL, when the user has one. */
+  picture?: string;
 }
 
 export const JWT_ISSUER = 'mercadia-identity';

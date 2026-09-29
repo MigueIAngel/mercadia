@@ -39,7 +39,14 @@ export function CartClient({ currency, signedIn }: { currency: Currency; signedI
     }
   };
 
-  if (!cart) return <p className="text-stone-500">…</p>;
+  if (!cart)
+    return (
+      <div className="space-y-3" aria-busy>
+        {[0, 1, 2].map((i) => (
+          <div key={i} className="skeleton h-28 rounded-3xl" />
+        ))}
+      </div>
+    );
   if (cart.count === 0) {
     return (
       <div className="card p-10 text-center">

@@ -33,6 +33,7 @@ and is the only service holding the JWT signing key.
 | POST | `/auth/demo` | One-click demo buyer / seller / admin |
 | POST | `/auth/2fa/setup`, `/auth/2fa/enable`, `/auth/2fa/disable` | TOTP |
 | GET/PATCH | `/users/me`, `/users/me/sessions`, `/users/me/security-log` | Profile and security |
+| POST | `/users/me/avatar/signature` | Signed direct upload of the profile photo to Cloudinary (`CLOUDINARY_URL`); the photo URL goes in the `picture` claim |
 | GET/POST/PATCH | `/stores`, `/stores/mine`, `/stores/:slug` | Stores |
 | GET/PATCH | `/admin/users`, `/admin/stores`, `/admin/audit`, `/admin/stats` | Admin console |
 

@@ -44,7 +44,10 @@ export async function Header() {
           >
             <ShoppingCart className="h-5 w-5" />
             {cart.count > 0 && (
-              <span className="absolute -top-0.5 -right-0.5 grid h-5 min-w-5 place-items-center rounded-full bg-accent-500 px-1 text-[11px] font-bold text-white">
+              <span
+                key={cart.count}
+                className="absolute -top-0.5 -right-0.5 grid h-5 min-w-5 animate-pop place-items-center rounded-full bg-accent-500 px-1 text-[11px] font-bold text-white"
+              >
                 {cart.count}
               </span>
             )}
@@ -62,7 +65,7 @@ export async function Header() {
             </>
           )}
           {user ? (
-            <AccountMenu name={user.name} roles={user.roles} />
+            <AccountMenu name={user.name} roles={user.roles} picture={user.picture} />
           ) : (
             <Link href="/login" className="btn-primary px-4 py-2">
               {t('login')}
@@ -75,7 +78,7 @@ export async function Header() {
           <Link
             key={c.slug}
             href={`/search?category=${c.slug}`}
-            className="whitespace-nowrap hover:text-ink"
+            className="relative whitespace-nowrap transition-colors after:absolute after:inset-x-0 after:-bottom-1 after:h-0.5 after:origin-left after:scale-x-0 after:rounded-full after:bg-accent-500 after:transition-transform hover:text-ink hover:after:scale-x-100"
           >
             {c.name[locale]}
           </Link>

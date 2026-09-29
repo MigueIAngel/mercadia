@@ -17,6 +17,8 @@ export class Review {
   /** Null for imported demo reviews. */
   @Prop({ type: String, default: null }) authorId: string | null;
   @Prop({ required: true }) authorName: string;
+  /** Profile photo of the author when the review was written. */
+  @Prop({ type: String, default: null }) authorAvatar: string | null;
   @Prop({ required: true, min: 1, max: 5 }) rating: number;
   @Prop({ default: '' }) title: string;
   @Prop({ required: true }) comment: string;
