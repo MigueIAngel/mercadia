@@ -1,0 +1,85 @@
+# Everything in containers, with the same three images as the Render demo:
+#   docker compose up --build   →  http://localhost:3000
+# For development with hot reload use docker-compose.infra.yml and run the apps on the host.
+name: mercadia
+
+x-shared: &shared
+  INTERNAL_API_KEY: local-internal-key
+  REDIS_URL: redis://redis:6379
+  MONGODB_URI: mongodb://mongodb:27017/?directConnection=true
+
+services:
+  mongodb:
+    image: mongodb/mongodb-atlas-local:8
+    hostname: mongodb
+    volumes: [mongodata:/data/db, mongoconfig:/data/configdb]
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.runCommand({ ping: 1 }).ok"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: mercadia
+      POSTGRES_PASSWORD: mercadia
+      POSTGRES_DB: mercadia
+    volumes: [pgdata:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U mercadia"]
+      interval: 3s
+      retries: 20
+
+  redis:
+    image: redis:8-alpine
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 3s
+      retries: 20
+
+  mailpit:
+    image: axllent/mailpit
+    ports: ["8025:8025"] # inbox UI for the emails the demo sends
+
+  api:
+    build: { context: ., dockerfile: deploy/api/Dockerfile }
+    environment:
+      <<: *shared
+      PORT: "4000"
+      DATABASE_URL: postgres://mercadia:mercadia@postgres:5432/mercadia
+      AI_URL: http://ai:8000
+      SITE_URL: http://localhost:3000
+      CORS_ORIGINS: http://localhost:3000
+      SMTP_URL: smtp://mailpit:1025
+    ports: ["4000:4000"]
+    depends_on:
+      mongodb: { condition: service_healthy }
+      postgres: { condition: service_healthy }
+      redis: { condition: service_healthy }
+
+  ai:
+    build: { context: services/ai }
+    environment:
+      <<: *shared
+      CATALOG_URL: http://api:4000/api/_svc/catalog
+      ORDERS_URL: http://api:4000/api/_svc/orders
+      FULFILLMENT_URL: http://api:4000/api/_svc/fulfillment
+      ENGAGEMENT_URL: http://api:4000/api/_svc/engagement
+      JWKS_URL: http://api:4000/api/_svc/identity/.well-known/jwks.json
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+    depends_on: [api]
+
+  web:
+    build: { context: ., dockerfile: apps/web/Dockerfile }
+    environment:
+      GATEWAY_URL: http://api:4000
+      PUBLIC_GATEWAY_URL: http://localhost:4000
+      SITE_URL: http://localhost:3000
+    ports: ["3000:3000"]
+    depends_on: [api]
+
+volumes:
+  mongodata:
+  mongoconfig:
+  pgdata:

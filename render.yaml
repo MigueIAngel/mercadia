@@ -1,0 +1,88 @@
+# Free demo on Render: three web services (the free plan has no private network, so the AI
+# container reaches internal endpoints through the gateway's key-protected /api/_svc route).
+# Data lives in free external services: MongoDB Atlas M0, Neon Postgres, Upstash Redis,
+# Cloudinary. Secrets are `sync: false`: fill them in the dashboard (or via the API).
+envVarGroups:
+  - name: mercadia-shared
+    envVars:
+      - key: INTERNAL_API_KEY
+        generateValue: true
+      - key: MONGODB_URI
+        sync: false
+      - key: REDIS_URL
+        sync: false
+
+services:
+  - type: web
+    name: mercadia-api
+    runtime: docker
+    plan: free
+    region: oregon
+    dockerfilePath: deploy/api/Dockerfile
+    dockerContext: .
+    healthCheckPath: /api/health
+    envVars:
+      - fromGroup: mercadia-shared
+      - key: DATABASE_URL # Neon: one server, a database per service is created on boot
+        sync: false
+      - key: JWT_PRIVATE_KEY # RS256 PEM (base64) so sessions survive restarts
+        sync: false
+      - key: ENCRYPTION_KEY # 32 bytes, encrypts TOTP secrets at rest
+        sync: false
+      - key: CLOUDINARY_URL
+        sync: false
+      - key: STRIPE_SECRET_KEY
+        sync: false
+      - key: STRIPE_PUBLISHABLE_KEY
+        sync: false
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false
+      - key: AI_URL # public URL of mercadia-ai
+        sync: false
+      - key: SITE_URL # public URL of mercadia-web (emails, OAuth redirects)
+        sync: false
+      - key: CORS_ORIGINS
+        sync: false
+
+  - type: web
+    name: mercadia-ai
+    runtime: docker
+    plan: free
+    region: oregon
+    dockerfilePath: services/ai/Dockerfile
+    dockerContext: services/ai
+    healthCheckPath: /health
+    envVars:
+      - fromGroup: mercadia-shared
+      - key: GEMINI_API_KEY
+        sync: false
+      # Everything the AI reads goes through the API container's gateway, e.g.
+      # https://mercadia-api.onrender.com/api/_svc/catalog
+      - key: CATALOG_URL
+        sync: false
+      - key: ORDERS_URL
+        sync: false
+      - key: FULFILLMENT_URL
+        sync: false
+      - key: ENGAGEMENT_URL
+        sync: false
+      - key: JWKS_URL
+        sync: false
+
+  - type: web
+    name: mercadia-web
+    runtime: docker
+    plan: free
+    region: oregon
+    dockerfilePath: apps/web/Dockerfile
+    dockerContext: .
+    healthCheckPath: /es
+    envVars:
+      - key: GATEWAY_URL # https://mercadia-api.onrender.com
+        sync: false
+      - key: PUBLIC_GATEWAY_URL # same, used by the browser for Socket.IO
+        sync: false
+      - key: SITE_URL
+        sync: false

@@ -1,0 +1,15 @@
+**/node_modules
+**/dist
+**/.next
+**/.venv
+**/__pycache__
+**/.pytest_cache
+**/.ruff_cache
+**/*.egg-info
+**/coverage
+**/*.tsbuildinfo
+.git
+.github
+.env
+.env.*
+**/.DS_Store

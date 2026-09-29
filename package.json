@@ -10,16 +10,25 @@
     "apps/*"
   ],
   "scripts": {
-    "build:packages": "npm run build -w @mercadia/contracts -w @mercadia/service-kit",
+    "build:packages": "npm run build -w @mercadia/contracts -w @mercadia/service-kit -w @mercadia/demo-data",
     "build": "npm run build:packages && npm run build --workspaces --if-present",
     "test": "npm run test --workspaces --if-present",
     "lint": "npm run lint --workspaces --if-present",
     "format": "prettier --write \"**/*.{ts,tsx}\" --ignore-path .gitignore",
     "format:check": "prettier --check \"**/*.{ts,tsx}\" --ignore-path .gitignore",
+    "start:all": "node scripts/run-all.mjs",
+    "start:traced": "node scripts/run-all.mjs --traced",
     "infra:up": "docker compose -f docker-compose.infra.yml up -d --wait",
     "infra:down": "docker compose -f docker-compose.infra.yml down"
   },
   "engines": {
     "node": ">=22"
+  },
+  "devDependencies": {
+    "@opentelemetry/auto-instrumentations-node": "^0.80.0",
+    "@types/node": "^24.19.0",
+    "prettier": "^3.9.9",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.11"
   }
 }
