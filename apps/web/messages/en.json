@@ -42,7 +42,8 @@
     "stores": "Featured stores",
     "shopByCategory": "Shop by category",
     "seeAll": "See all",
-    "products": "{count} products"
+    "products": "{count} products",
+    "forYou": "Picked for you"
   },
   "product": {
     "off": "-{percent}%",
@@ -103,7 +104,9 @@
     "noResults": "No products match these filters.",
     "prev": "Previous",
     "next": "Next",
-    "page": "Page {page} of {pages}"
+    "page": "Page {page} of {pages}",
+    "semanticTitle": "You might be interested in",
+    "semanticText": "Products related to the meaning of your search (AI semantic search)."
   },
   "store": {
     "since": "On Mercadia since {date}",
@@ -257,7 +260,25 @@
     "noOrders": "No orders yet.",
     "buyerCity": "Customer in {city}",
     "reviews": "Reviews",
-    "messages": "Messages"
+    "messages": "Messages",
+    "ai": {
+      "open": "Write with AI",
+      "title": "AI copywriter",
+      "help": "Fill in the title, brand and category, add your notes and the AI drafts the description. Review it before publishing.",
+      "notes": "Product notes",
+      "notesPlaceholder": "Materials, size, what is included, who it is for…",
+      "tone": "Tone",
+      "tones": {
+        "professional": "Professional",
+        "friendly": "Friendly",
+        "premium": "Premium"
+      },
+      "write": "Generate copy",
+      "writing": "Writing…",
+      "needTitle": "Write the product title first.",
+      "doneGemini": "Done: title and description filled in with Gemini. Review them before publishing.",
+      "doneLocal": "Done: we drafted it from a template (Gemini is not configured in this demo)."
+    }
   },
   "admin": {
     "title": "Admin",
@@ -498,5 +519,25 @@
     "explore": "Explore products",
     "dropped": "{percent}% off",
     "remove": "Remove from wishlist"
+  },
+  "assistant": {
+    "open": "AI assistant",
+    "close": "Close",
+    "title": "Shopping assistant",
+    "subtitle": "I help you find products, compare and follow your orders",
+    "welcome": "Hi! Tell me what you are looking for, who it is for and your budget. I can also tell you how your order is doing.",
+    "suggestions": {
+      "s1": "Wireless earbuds under 200 mil",
+      "s2": "A gift for my mom",
+      "s3": "Something for the kitchen",
+      "s4": "How are my orders doing?"
+    },
+    "placeholder": "Type your question…",
+    "send": "Send",
+    "clear": "New chat",
+    "thinking": "Thinking…",
+    "error": "I couldn't answer right now. Please try again.",
+    "limited": "You sent many messages in a row. Please wait a few minutes.",
+    "disclaimer": "Answers are AI-generated and may contain mistakes. Prices and stock come from the catalog."
   }
 }
