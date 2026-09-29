@@ -26,6 +26,8 @@ const DEFAULT_PORTS: Record<ServiceName, number> = {
 export const config = () => ({
   port: Number(serviceEnv(S, 'PORT', '4000')),
   redisUrl: serviceEnv(S, 'REDIS_URL', 'redis://localhost:6379'),
+  /** Unlocks `/api/_svc/*` for services hosted in other containers (e.g. the AI service). */
+  internalKey: serviceEnv(S, 'INTERNAL_API_KEY', 'dev-internal-key'),
   corsOrigins: serviceEnv(S, 'CORS_ORIGINS', 'http://localhost:3000').split(','),
   breakerThreshold: Number(serviceEnv(S, 'BREAKER_THRESHOLD', '5')),
   breakerCooldownMs: Number(serviceEnv(S, 'BREAKER_COOLDOWN_MS', '10000')),

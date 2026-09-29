@@ -77,6 +77,20 @@ describe('Gateway (e2e)', () => {
     await http().post('/api/users/internal/lookup').expect(404);
   });
 
+  it('lets other containers reach a service directly only with the internal key', async () => {
+    await http().get('/api/_svc/catalog/internal/products/export').expect(404);
+    await http()
+      .get('/api/_svc/catalog/internal/products/export')
+      .set('x-internal-key', 'wrong')
+      .expect(404);
+    await http().get('/api/_svc/nope/health').set('x-internal-key', 'dev-internal-key').expect(404);
+    const res = await http()
+      .get('/api/_svc/catalog/internal/products/export?ids=a')
+      .set('x-internal-key', 'dev-internal-key')
+      .expect(200);
+    expect(res.body.url).toBe('/internal/products/export?ids=a');
+  });
+
   it('fails fast with 503 once a service circuit opens', async () => {
     await http().get('/api/orders').expect(503);
     await http().get('/api/orders').expect(503);
