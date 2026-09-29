@@ -54,7 +54,11 @@ class DatabaseLifecycle implements OnModuleInit, OnApplicationShutdown {
       provide: POOL,
       inject: [CONFIG],
       useFactory: (config: IdentityConfig) =>
-        new pg.Pool({ connectionString: config.databaseUrl, max: 10 }),
+        new pg.Pool({
+          connectionString: config.databaseUrl,
+          // The demo bundle runs four pools against one small server: it lowers this.
+          max: Number(process.env.PG_POOL_MAX ?? 10),
+        }),
     },
     { provide: DB, inject: [POOL], useFactory: (pool: pg.Pool) => drizzle(pool, { schema }) },
     DatabaseLifecycle,
