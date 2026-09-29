@@ -233,7 +233,7 @@ def system_prompt(ctx: Context) -> str:
     return (
         "You are Mercadia's shopping assistant, a Colombian multi-vendor marketplace. "
         f"Always answer in {language}, in a warm, concise tone (at most 5 short sentences or a "
-        "short list). "
+        "short list). Write plain text, no Markdown: use '•' for lists and no asterisks. "
         f"{who} Prices are shown in {ctx.currency}; when the shopper gives a budget, pass it as "
         "max_price in whole units of that currency (e.g. '200 mil' = 200000 pesos, '$50' = 50). "
         "Only recommend products returned by your tools and never invent products, prices, "
@@ -246,9 +246,11 @@ def system_prompt(ctx: Context) -> str:
 
 
 class Assistant:
-    def __init__(self, tools: Tools, api_key: str, model: str):
+    def __init__(self, tools: Tools, api_key: str, model: str, fallback_model: str = ""):
         self.tools = tools
         self.model = model
+        # A second model to try when the first one is overloaded (503) or rate limited (429).
+        self.models = [m for m in dict.fromkeys([model, fallback_model]) if m]
         self.client = None
         if api_key:
             from google import genai
@@ -262,12 +264,14 @@ class Assistant:
         provider = "local"
         text = ""
         if self.client:
-            try:
-                text = await self._gemini(history, message, ctx)
-                provider = "gemini"
-            except Exception as error:  # quota, network, safety block…
-                log.warning("Gemini failed, using the local assistant: %s", error)
-                ctx = Context(user=user, currency=currency, locale=locale)
+            for model in self.models:
+                try:
+                    text = await self._gemini(history, message, ctx, model)
+                    provider = "gemini"
+                    break
+                except Exception as error:  # overload, quota, network, safety block…
+                    log.warning("Gemini (%s) failed: %s", model, str(error)[:160])
+                    ctx = Context(user=user, currency=currency, locale=locale)
         if provider == "local":
             text = await self._local(message, ctx)
         return {
@@ -278,7 +282,7 @@ class Assistant:
             "provider": provider,
         }
 
-    async def _gemini(self, history: list[Turn], message: str, ctx: Context) -> str:
+    async def _gemini(self, history: list[Turn], message: str, ctx: Context, model: str) -> str:
         from google.genai import types
 
         contents: list[types.Content] = [
@@ -309,7 +313,7 @@ class Assistant:
         )
         for _ in range(MAX_ROUNDS):
             res = await self.client.aio.models.generate_content(
-                model=self.model, contents=contents, config=config
+                model=model, contents=contents, config=config
             )
             calls = res.function_calls or []
             if not calls:
@@ -326,7 +330,7 @@ class Assistant:
             contents.append(types.Content(role="user", parts=parts))
         # Out of rounds: ask for a final answer without tools.
         final = await self.client.aio.models.generate_content(
-            model=self.model,
+            model=model,
             contents=contents,
             config=types.GenerateContentConfig(
                 system_instruction=system_prompt(ctx), temperature=0.4, max_output_tokens=500

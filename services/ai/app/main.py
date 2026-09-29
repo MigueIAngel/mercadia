@@ -82,7 +82,10 @@ async def lifespan(app: FastAPI):
     state.indexer = Indexer(state.services, state.store, embedder)
     state.search = SearchService(state.services, state.store, embedder)
     state.assistant = Assistant(
-        Tools(state.services, state.search), cfg.gemini_api_key, cfg.gemini_model
+        Tools(state.services, state.search),
+        cfg.gemini_api_key,
+        cfg.gemini_model,
+        cfg.gemini_fallback_model,
     )
     state.copywriter = Copywriter(cfg.gemini_api_key, cfg.gemini_model)
     background: list[asyncio.Task] = []
