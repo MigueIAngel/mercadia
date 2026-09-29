@@ -18,16 +18,21 @@ function setDefault(key, value) {
   if (env[key] === undefined || env[key] === '') env[key] = value;
 }
 
-/** postgres://…/neondb?sslmode=require → same server, database `name`. */
+/**
+ * postgres://…/neondb?sslmode=require → same server, database `name`. Neon's pooled host
+ * (`-pooler`, PgBouncer in transaction mode) drops connections during long seeds and
+ * migrations, so the bundle talks to the direct endpoint; its few small pools fit easily.
+ */
 function withDatabase(url, name) {
   const u = new URL(url);
-  u.pathname = `/${name}`;
+  u.hostname = u.hostname.replace('-pooler.', '.');
+  if (name) u.pathname = `/${name}`;
   return u.toString();
 }
 
 async function ensureDatabases() {
   if (!env.DATABASE_URL) throw new Error('DATABASE_URL is required');
-  const admin = new pg.Client({ connectionString: env.DATABASE_URL });
+  const admin = new pg.Client({ connectionString: withDatabase(env.DATABASE_URL) });
   await admin.connect();
   try {
     const { rows } = await admin.query('SELECT datname FROM pg_database');
