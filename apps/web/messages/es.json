@@ -20,7 +20,8 @@
     "currency": "Moneda",
     "language": "English",
     "messages": "Mensajes",
-    "wishlist": "Favoritos"
+    "wishlist": "Favoritos",
+    "paymentMethods": "Métodos de pago"
   },
   "home": {
     "heroTitle": "Todo lo que buscas, de tiendas que conoces",
@@ -43,7 +44,12 @@
     "shopByCategory": "Compra por categoría",
     "seeAll": "Ver todo",
     "products": "{count} productos",
-    "forYou": "Recomendado para ti"
+    "forYou": "Recomendado para ti",
+    "stats": {
+      "products": "productos",
+      "stores": "tiendas verificadas",
+      "categories": "categorías"
+    }
   },
   "product": {
     "off": "-{percent}%",
@@ -76,7 +82,9 @@
     "saved": "En favoritos",
     "askLabel": "Tu pregunta para la tienda",
     "askPlaceholder": "¿Tienen otros colores? ¿Cuánto tarda el envío a mi ciudad?",
-    "askSend": "Enviar pregunta"
+    "askSend": "Enviar pregunta",
+    "view": "Ver detalles",
+    "addedToast": "{quantity, plural, one {Se agregó # unidad} other {Se agregaron # unidades}} al carrito"
   },
   "search": {
     "title": "Resultados",
@@ -186,7 +194,16 @@
       "store_opened": "Tienda creada",
       "admin_user_updated": "Cuenta modificada por un admin",
       "admin_store_updated": "Tienda modificada por un admin"
-    }
+    },
+    "photo": "Foto de perfil",
+    "photoHint": "JPG, PNG o WebP de hasta 10 MB. La recortamos en un cuadrado.",
+    "uploadPhoto": "Subir foto",
+    "changePhoto": "Cambiar foto",
+    "removePhoto": "Quitar",
+    "photoSaved": "¡Foto de perfil actualizada!",
+    "photoRemoved": "Foto de perfil eliminada",
+    "photoType": "Elige un archivo de imagen.",
+    "photoSize": "La imagen supera los 10 MB."
   },
   "sell": {
     "title": "Abre tu tienda en Mercadia",
@@ -367,7 +384,36 @@
     "failed": "El pago fue rechazado: {reason}. Puedes intentar con otra tarjeta.",
     "expiresIn": "Tu pedido se reserva durante 30 minutos.",
     "viewOrder": "Ver mi pedido",
-    "stripeNote": "Pagos procesados por Stripe en modo de prueba."
+    "stripeNote": "Pagos procesados por Stripe en modo de prueba.",
+    "processing": "Estamos procesando tu pago",
+    "steps": {
+      "validating": "Validando los datos de tu tarjeta…",
+      "bank": "Conectando con tu banco…",
+      "confirming": "Confirmando el pago…"
+    },
+    "secure": "Pago cifrado de extremo a extremo",
+    "protected": "Tu dinero queda protegido hasta que recibas tu pedido.",
+    "approvedTitle": "¡Listo! Pago aprobado",
+    "approvedText": "Pagaste {amount}. Ya le avisamos al vendedor.",
+    "keepShopping": "Seguir comprando",
+    "declinedTitle": "No pudimos procesar tu pago",
+    "tryAgain": "Intentar de nuevo",
+    "reasons": {
+      "card_declined": "Tu banco rechazó la tarjeta. Prueba con otra.",
+      "insufficient_funds": "La tarjeta no tiene fondos suficientes.",
+      "expired_card": "La tarjeta está vencida.",
+      "incorrect_cvc": "El código de seguridad no es correcto.",
+      "invalid_number": "El número de tarjeta no es válido.",
+      "authentication_required": "No se completó la verificación de tu banco.",
+      "generic": "Ocurrió un problema con el pago. No se hizo ningún cobro."
+    },
+    "chooseMethod": "¿Cómo quieres pagar?",
+    "newCard": "Nueva tarjeta de crédito o débito",
+    "expires": "Vence {date}",
+    "default": "Predeterminada",
+    "holder": "Nombre del titular",
+    "holderPlaceholder": "Nombre del titular",
+    "saveCard": "Guardar esta tarjeta para mis próximas compras"
   },
   "orders": {
     "title": "Mis compras",
@@ -539,5 +585,30 @@
     "error": "No pude responder en este momento. Intenta de nuevo.",
     "limited": "Has enviado muchos mensajes seguidos. Espera unos minutos, por favor.",
     "disclaimer": "Las respuestas las genera una IA y pueden tener errores. Los precios y el stock salen del catálogo."
+  },
+  "methods": {
+    "title": "Métodos de pago",
+    "subtitle": "Guardamos solo una referencia segura de tus tarjetas, nunca el número completo.",
+    "back": "Mi cuenta",
+    "add": "Agregar tarjeta",
+    "saveCard": "Guardar tarjeta",
+    "saved": "Tarjeta terminada en {last4} guardada",
+    "defaultChanged": "Tarjeta predeterminada actualizada",
+    "removed": "Tarjeta eliminada",
+    "confirmRemove": "¿Eliminar esta tarjeta?",
+    "remove": "Eliminar",
+    "cancel": "Cancelar",
+    "default": "Predeterminada",
+    "makeDefault": "Predeterminar",
+    "empty": "Aún no tienes tarjetas guardadas. Agrega una para pagar en un clic.",
+    "stripeNote": "Stripe guarda la tarjeta en modo de prueba; usa 4242 4242 4242 4242.",
+    "manage": "Administra tus tarjetas guardadas",
+    "reasons": {
+      "card_declined": "El banco rechazó la tarjeta.",
+      "insufficient_funds": "La tarjeta no tiene fondos suficientes.",
+      "expired_card": "La tarjeta está vencida.",
+      "incorrect_cvc": "El código de seguridad no es correcto.",
+      "invalid_number": "El número de tarjeta no es válido."
+    }
   }
 }

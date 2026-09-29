@@ -1,5 +1,7 @@
 import type { INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
+import { decodeJwt } from 'jose';
+import { createHash } from 'node:crypto';
 import { generate } from 'otplib';
 import request from 'supertest';
 import { resetDatabase } from './setup-env.js';
@@ -206,6 +208,48 @@ describe('Identity service (e2e)', () => {
         .send({ refreshToken: victim.body.refreshToken })
         .expect(401);
       await login('suspend@example.com', 'Secreta123').expect(403);
+    });
+  });
+
+  describe('profile photo', () => {
+    it('signs direct uploads and accepts only photos from our cloud', async () => {
+      const { body } = await register('photo@example.com').expect(201);
+      const auth = { Authorization: `Bearer ${body.accessToken}` };
+      const sig = await http().post('/users/me/avatar/signature').set(auth).expect(200);
+      expect(sig.body).toMatchObject({
+        url: 'https://api.cloudinary.com/v1_1/democloud/image/upload',
+        apiKey: '123456',
+        folder: 'mercadia/avatars',
+        public_id: body.user.id,
+      });
+      const expected = createHash('sha1')
+        .update(
+          `folder=mercadia/avatars&overwrite=true&public_id=${body.user.id}&timestamp=${sig.body.timestamp}cloud-secret`,
+        )
+        .digest('hex');
+      expect(sig.body.signature).toBe(expected);
+
+      for (const avatarUrl of [
+        'http://res.cloudinary.com/democloud/image/upload/a.jpg',
+        'https://evil.example.com/a.jpg',
+        'https://res.cloudinary.com/othercloud/image/upload/a.jpg',
+      ]) {
+        await http().patch('/users/me').set(auth).send({ avatarUrl }).expect(400);
+      }
+      const photo = `https://res.cloudinary.com/democloud/image/upload/v1/mercadia/avatars/${body.user.id}.jpg`;
+      const updated = await http().patch('/users/me').set(auth).send({ avatarUrl: photo });
+      expect(updated.status).toBe(200);
+      expect(updated.body.avatarUrl).toBe(photo);
+
+      // The next access token carries the photo, so the header can show it.
+      const refreshed = await http()
+        .post('/auth/refresh')
+        .send({ refreshToken: body.refreshToken })
+        .expect(200);
+      expect(decodeJwt(refreshed.body.accessToken).picture).toBe(photo);
+
+      const removed = await http().patch('/users/me').set(auth).send({ avatarUrl: null });
+      expect(removed.body.avatarUrl).toBeNull();
     });
   });
 

@@ -9,12 +9,22 @@ import {
   Shield,
   Store,
   User,
+  Wallet,
 } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useEffect, useRef, useState } from 'react';
 import { Link, useRouter } from '@/i18n/navigation';
+import { Avatar } from './ui/Avatar';
 
-export function AccountMenu({ name, roles }: { name: string; roles: string[] }) {
+export function AccountMenu({
+  name,
+  roles,
+  picture,
+}: {
+  name: string;
+  roles: string[];
+  picture?: string;
+}) {
   const t = useTranslations('nav');
   const router = useRouter();
   const [open, setOpen] = useState(false);
@@ -42,22 +52,27 @@ export function AccountMenu({ name, roles }: { name: string; roles: string[] }) 
         className="flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium hover:bg-stone-100"
         aria-expanded={open}
       >
-        <span className="grid h-7 w-7 place-items-center rounded-full bg-ink text-xs font-bold text-white">
-          {name.slice(0, 1).toUpperCase()}
-        </span>
+        <Avatar name={name} src={picture} size={28} />
         <span className="hidden max-w-28 truncate lg:inline">{name.split(' ')[0]}</span>
-        <ChevronDown className="h-4 w-4" />
+        <ChevronDown className={`h-4 w-4 transition-transform ${open ? 'rotate-180' : ''}`} />
       </button>
       {open && (
         <div
-          className="absolute right-0 z-40 mt-2 w-56 overflow-hidden rounded-2xl bg-white py-1 shadow-xl ring-1 ring-stone-200"
+          className="absolute right-0 z-40 mt-2 w-60 origin-top-right animate-scale-in overflow-hidden rounded-2xl bg-white py-1 shadow-xl ring-1 ring-stone-200"
           onClick={() => setOpen(false)}
         >
+          <div className="flex items-center gap-3 border-b border-stone-100 px-4 py-3">
+            <Avatar name={name} src={picture} size={40} />
+            <span className="min-w-0 truncate font-semibold">{name}</span>
+          </div>
           <Link href="/account" className={item}>
             <User className="h-4 w-4" /> {t('account')}
           </Link>
           <Link href="/account/orders" className={item}>
             <Package className="h-4 w-4" /> {t('orders')}
+          </Link>
+          <Link href="/account/payment-methods" className={item}>
+            <Wallet className="h-4 w-4" /> {t('paymentMethods')}
           </Link>
           <Link href="/messages" className={item}>
             <MessageCircle className="h-4 w-4" /> {t('messages')}

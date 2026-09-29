@@ -7,6 +7,7 @@ import { useState } from 'react';
 import { Link, useRouter } from '@/i18n/navigation';
 import { call } from '@/lib/client';
 import { safeNext } from '@/lib/redirect';
+import { Spinner } from '@/components/ui/Spinner';
 
 const DEMO_PASSWORD = 'Mercadia2026!';
 
@@ -62,7 +63,11 @@ function DemoAccess({ onDone }: { onDone: () => void }) {
             onClick={() => login(role)}
             className="btn-outline px-2 py-2"
           >
-            {busy === role ? '…' : t(`demo${role[0].toUpperCase()}${role.slice(1)}` as 'demoBuyer')}
+            {busy === role ? (
+              <Spinner className="mx-auto" />
+            ) : (
+              t(`demo${role[0].toUpperCase()}${role.slice(1)}` as 'demoBuyer')
+            )}
           </button>
         ))}
       </div>
@@ -128,6 +133,7 @@ export function AuthForm({ mode }: { mode: 'login' | 'register' }) {
         />
         {error && <p className="text-sm text-rose-600">{error}</p>}
         <button disabled={busy} className="btn-primary w-full py-3">
+          {busy && <Spinner />}
           {t('verify')}
         </button>
       </form>
@@ -193,6 +199,7 @@ export function AuthForm({ mode }: { mode: 'login' | 'register' }) {
           </p>
         )}
         <button disabled={busy} className="btn-primary w-full py-3">
+          {busy && <Spinner />}
           {mode === 'login' ? t('submitLogin') : t('submitRegister')}
         </button>
       </form>

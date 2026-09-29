@@ -64,6 +64,7 @@ export class TokensService {
       name: user.name,
       roles: profile.roles,
       ...(profile.store && { storeId: profile.store.id }),
+      ...(user.avatarUrl && { picture: user.avatarUrl }),
     };
     const refreshToken = randomToken(48);
     await this.db.insert(refreshTokens).values({

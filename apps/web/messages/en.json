@@ -20,7 +20,8 @@
     "currency": "Currency",
     "language": "Español",
     "messages": "Messages",
-    "wishlist": "Wishlist"
+    "wishlist": "Wishlist",
+    "paymentMethods": "Payment methods"
   },
   "home": {
     "heroTitle": "Everything you want, from stores you know",
@@ -43,7 +44,12 @@
     "shopByCategory": "Shop by category",
     "seeAll": "See all",
     "products": "{count} products",
-    "forYou": "Picked for you"
+    "forYou": "Picked for you",
+    "stats": {
+      "products": "products",
+      "stores": "verified stores",
+      "categories": "categories"
+    }
   },
   "product": {
     "off": "-{percent}%",
@@ -76,7 +82,9 @@
     "saved": "Saved",
     "askLabel": "Your question for the store",
     "askPlaceholder": "Do you have other colours? How long does shipping to my city take?",
-    "askSend": "Send question"
+    "askSend": "Send question",
+    "view": "View details",
+    "addedToast": "{quantity, plural, one {# item} other {# items}} added to your cart"
   },
   "search": {
     "title": "Results",
@@ -186,7 +194,16 @@
       "store_opened": "Store opened",
       "admin_user_updated": "Account changed by an admin",
       "admin_store_updated": "Store changed by an admin"
-    }
+    },
+    "photo": "Profile photo",
+    "photoHint": "JPG, PNG or WebP up to 10 MB. We crop it to a square.",
+    "uploadPhoto": "Upload photo",
+    "changePhoto": "Change photo",
+    "removePhoto": "Remove",
+    "photoSaved": "Profile photo updated!",
+    "photoRemoved": "Profile photo removed",
+    "photoType": "Choose an image file.",
+    "photoSize": "The image is larger than 10 MB."
   },
   "sell": {
     "title": "Open your store on Mercadia",
@@ -367,7 +384,36 @@
     "failed": "The payment was declined: {reason}. You can try another card.",
     "expiresIn": "Your order is held for 30 minutes.",
     "viewOrder": "View my order",
-    "stripeNote": "Payments processed by Stripe in test mode."
+    "stripeNote": "Payments processed by Stripe in test mode.",
+    "processing": "We're processing your payment",
+    "steps": {
+      "validating": "Checking your card details…",
+      "bank": "Contacting your bank…",
+      "confirming": "Confirming the payment…"
+    },
+    "secure": "End-to-end encrypted payment",
+    "protected": "Your money is protected until you receive your order.",
+    "approvedTitle": "Done! Payment approved",
+    "approvedText": "You paid {amount}. The seller has been notified.",
+    "keepShopping": "Keep shopping",
+    "declinedTitle": "We couldn't process your payment",
+    "tryAgain": "Try again",
+    "reasons": {
+      "card_declined": "Your bank declined the card. Try another one.",
+      "insufficient_funds": "The card has insufficient funds.",
+      "expired_card": "The card has expired.",
+      "incorrect_cvc": "The security code is incorrect.",
+      "invalid_number": "The card number is not valid.",
+      "authentication_required": "Your bank's verification was not completed.",
+      "generic": "Something went wrong with the payment. You were not charged."
+    },
+    "chooseMethod": "How would you like to pay?",
+    "newCard": "New credit or debit card",
+    "expires": "Expires {date}",
+    "default": "Default",
+    "holder": "Cardholder name",
+    "holderPlaceholder": "Cardholder name",
+    "saveCard": "Save this card for my next purchases"
   },
   "orders": {
     "title": "My orders",
@@ -539,5 +585,30 @@
     "error": "I couldn't answer right now. Please try again.",
     "limited": "You sent many messages in a row. Please wait a few minutes.",
     "disclaimer": "Answers are AI-generated and may contain mistakes. Prices and stock come from the catalog."
+  },
+  "methods": {
+    "title": "Payment methods",
+    "subtitle": "We only keep a secure reference to your cards, never the full number.",
+    "back": "My account",
+    "add": "Add a card",
+    "saveCard": "Save card",
+    "saved": "Card ending in {last4} saved",
+    "defaultChanged": "Default card updated",
+    "removed": "Card removed",
+    "confirmRemove": "Remove this card?",
+    "remove": "Remove",
+    "cancel": "Cancel",
+    "default": "Default",
+    "makeDefault": "Make default",
+    "empty": "You have no saved cards yet. Add one to pay in one click.",
+    "stripeNote": "Stripe stores the card in test mode; use 4242 4242 4242 4242.",
+    "manage": "Manage your saved cards",
+    "reasons": {
+      "card_declined": "The bank declined the card.",
+      "insufficient_funds": "The card has insufficient funds.",
+      "expired_card": "The card has expired.",
+      "incorrect_cvc": "The security code is incorrect.",
+      "invalid_number": "The card number is not valid."
+    }
   }
 }

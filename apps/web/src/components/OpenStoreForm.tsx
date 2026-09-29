@@ -4,6 +4,7 @@ import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { useRouter } from '@/i18n/navigation';
 import { call } from '@/lib/client';
+import { Spinner } from '@/components/ui/Spinner';
 
 export function OpenStoreForm() {
   const t = useTranslations('sell');
@@ -63,6 +64,7 @@ export function OpenStoreForm() {
       </div>
       {error && <p className="text-sm text-rose-600">{error}</p>}
       <button disabled={busy} className="btn-accent w-full py-3">
+        {busy && <Spinner />}
         {t('submit')}
       </button>
     </form>

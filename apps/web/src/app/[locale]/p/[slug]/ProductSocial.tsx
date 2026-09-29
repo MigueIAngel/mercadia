@@ -5,6 +5,7 @@ import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 import { useRouter } from '@/i18n/navigation';
 import { call } from '@/lib/client';
+import { Spinner } from '@/components/ui/Spinner';
 
 interface Props {
   productId: string;
@@ -101,6 +102,7 @@ export function ProductSocial({ productId, productSlug, storeId, signedIn, ownSt
           />
           {error && <p className="text-sm text-rose-600">{error}</p>}
           <button disabled={busy || !text.trim()} className="btn-primary px-4 py-2 text-sm">
+            {busy && <Spinner />}
             <Send className="h-4 w-4" /> {t('askSend')}
           </button>
         </form>

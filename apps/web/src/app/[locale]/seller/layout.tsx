@@ -1,5 +1,5 @@
 import { getTranslations } from 'next-intl/server';
-import { Link } from '@/i18n/navigation';
+import { SellerNav } from '@/components/seller/SellerNav';
 import { requireUser } from '@/lib/guard';
 
 export default async function SellerLayout({ children }: LayoutProps<'/[locale]/seller'>) {
@@ -19,19 +19,9 @@ export default async function SellerLayout({ children }: LayoutProps<'/[locale]/
     <div className="mx-auto grid max-w-7xl gap-8 px-4 py-8 lg:grid-cols-[220px_1fr]">
       <aside>
         <p className="mb-3 font-display text-2xl">{t('title')}</p>
-        <nav className="flex gap-2 overflow-x-auto lg:flex-col">
-          {links.map(([href, label]) => (
-            <Link
-              key={href}
-              href={href}
-              className="rounded-xl px-3 py-2 text-sm whitespace-nowrap hover:bg-white"
-            >
-              {label}
-            </Link>
-          ))}
-        </nav>
+        <SellerNav links={[...links]} />
       </aside>
-      <div>{children}</div>
+      <div className="min-w-0 animate-fade-up">{children}</div>
     </div>
   );
 }
