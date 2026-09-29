@@ -24,6 +24,23 @@ after delivery.
    refunds its amount. Refunds are idempotent (keyed by dispute or cancellation) and taken from
    the seller's held share first.
 
+## Saved cards
+
+Buyers can keep cards to pay in one click. Only the processor reference, brand, last 4 digits
+and expiry are stored: never the number or the CVC.
+
+| Method | Path | |
+| --- | --- | --- |
+| GET | `/payments/methods` | Saved cards (default first) |
+| POST | `/payments/methods/setup` | Stripe SetupIntent client secret (the browser confirms it with Elements) |
+| POST | `/payments/methods/complete` | Stores the card of a confirmed SetupIntent (checked against the buyer's Stripe Customer) |
+| POST | `/payments/methods/test-card` | Simulated processor: validates and saves a test card |
+| POST | `/payments/methods/:id/default` · DELETE `/payments/methods/:id` | Default card, remove (detaches it in Stripe) |
+| POST | `/payments/:id/pay-saved` | Pays an order with a saved card; returns a 3-D Secure step when the bank asks for one |
+
+Each buyer gets a Stripe Customer on first use. The demo seed gives every demo buyer a saved
+Visa (`pm_card_visa` in Stripe test mode).
+
 ## Simulated processor
 
 The demo runs without Stripe credentials, using Stripe's own test numbers:
@@ -38,5 +55,5 @@ The demo runs without Stripe credentials, using Stripe's own test numbers:
 Numbers are validated with Luhn, expiry and CVC checks; only the last 4 digits are stored.
 
 ```bash
-npm test -w @mercadia/payments   # 12 tests (escrow, release, refunds, idempotency, test cards)
+npm test -w @mercadia/payments   # 16 tests (escrow, release, refunds, idempotency, test cards, saved cards)
 ```

@@ -112,6 +112,7 @@ export class ReviewsService {
         authorName:
           user.name.split(' ')[0] +
           (user.name.includes(' ') ? ` ${user.name.split(' ').at(-1)![0]}.` : ''),
+        authorAvatar: user.picture ?? null,
         rating: input.rating,
         title: input.title ?? '',
         comment: input.comment,

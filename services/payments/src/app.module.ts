@@ -4,6 +4,8 @@ import { OrdersClient } from './clients/orders.client.js';
 import { config, CONFIG, type PaymentsConfig } from './config.js';
 import { ConfigModule } from './config.module.js';
 import { DatabaseModule } from './db/database.module.js';
+import { MethodsController } from './methods/methods.controller.js';
+import { MethodsService } from './methods/methods.service.js';
 import { PaymentsController } from './payments/payments.controller.js';
 import { PaymentsSaga } from './payments/payments.saga.js';
 import { PaymentsService } from './payments/payments.service.js';
@@ -28,7 +30,7 @@ const settings = config();
     AuthModule.forRoot({ jwksUrl: settings.jwksUrl, internalKey: settings.internalKey }),
     DatabaseModule,
   ],
-  controllers: [PaymentsController, StripeWebhookController],
+  controllers: [PaymentsController, MethodsController, StripeWebhookController],
   providers: [
     {
       provide: PaymentProvider,
@@ -44,6 +46,7 @@ const settings = config();
       },
     },
     PaymentsService,
+    MethodsService,
     PaymentsSaga,
     OrdersClient,
     SeedService,

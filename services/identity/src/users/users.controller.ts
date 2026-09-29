@@ -11,18 +11,32 @@ import {
   ParseUUIDPipe,
   Patch,
   Post,
+  ServiceUnavailableException,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiProperty, ApiPropertyOptional, ApiTags } from '@nestjs/swagger';
 import { verify } from '@node-rs/argon2';
-import { IsIn, IsOptional, IsString, IsUrl, Length, Matches } from 'class-validator';
+import {
+  IsIn,
+  IsOptional,
+  IsString,
+  IsUrl,
+  Length,
+  Matches,
+  MaxLength,
+  ValidateIf,
+} from 'class-validator';
+import { createHash } from 'node:crypto';
 import { eq, inArray } from 'drizzle-orm';
 import { CurrentUser, Internal, type AuthUser } from '@mercadia/service-kit';
 import { AuditService, type RequestMeta } from '../audit/audit.service.js';
+import { CONFIG, type IdentityConfig } from '../config.js';
 import { hashPassword } from '../auth/auth.service.js';
 import { TokensService } from '../auth/tokens.service.js';
 import { DB, type Database } from '../db/database.module.js';
 import { users } from '../db/schema.js';
 import { Meta } from '../request-meta.js';
+
+const AVATAR_HOSTS = ['res.cloudinary.com', 'lh3.googleusercontent.com'];
 
 class UpdateProfileDto {
   @ApiPropertyOptional()
@@ -41,10 +55,13 @@ class UpdateProfileDto {
   @IsIn(['COP', 'USD'])
   currency?: string;
 
-  @ApiPropertyOptional()
+  /** A photo uploaded to our Cloudinary (or the Google one); null removes it. */
+  @ApiPropertyOptional({ nullable: true })
   @IsOptional()
-  @IsUrl()
-  avatarUrl?: string;
+  @ValidateIf((_, value) => value !== null)
+  @IsUrl({ protocols: ['https'], require_protocol: true, host_whitelist: AVATAR_HOSTS })
+  @MaxLength(500)
+  avatarUrl?: string | null;
 }
 
 class ChangePasswordDto {
@@ -61,11 +78,17 @@ class ChangePasswordDto {
 @ApiBearerAuth()
 @Controller('users')
 export class UsersController {
+  private readonly cloudinary?: { cloudName: string; apiKey: string; apiSecret: string };
+
   constructor(
     @Inject(DB) private readonly db: Database,
+    @Inject(CONFIG) config: IdentityConfig,
     private readonly tokens: TokensService,
     private readonly audit: AuditService,
-  ) {}
+  ) {
+    const match = config.cloudinaryUrl?.match(/^cloudinary:\/\/(\d+):([^@]+)@(.+)$/);
+    if (match) this.cloudinary = { apiKey: match[1], apiSecret: match[2], cloudName: match[3] };
+  }
 
   private async load(id: string) {
     const [user] = await this.db.select().from(users).where(eq(users.id, id));
@@ -80,12 +103,48 @@ export class UsersController {
 
   @Patch('me')
   async update(@CurrentUser() current: AuthUser, @Body() dto: UpdateProfileDto) {
+    const cloud = dto.avatarUrl && new URL(dto.avatarUrl);
+    if (
+      cloud &&
+      cloud.hostname === 'res.cloudinary.com' &&
+      !cloud.pathname.startsWith(`/${this.cloudinary?.cloudName}/`)
+    ) {
+      throw new BadRequestException('The photo must be uploaded to Mercadia');
+    }
     const [user] = await this.db
       .update(users)
       .set({ ...dto, updatedAt: new Date() })
       .where(eq(users.id, current.sub))
       .returning();
     return this.tokens.publicUser(user);
+  }
+
+  /**
+   * Signed direct upload: the browser sends the photo straight to Cloudinary, which stores it
+   * as `mercadia/avatars/<user id>` (a new photo replaces the old one).
+   */
+  @Post('me/avatar/signature')
+  @HttpCode(200)
+  avatarSignature(@CurrentUser() current: AuthUser) {
+    if (!this.cloudinary) throw new ServiceUnavailableException('Photo uploads are not configured');
+    const params = {
+      folder: 'mercadia/avatars',
+      overwrite: 'true',
+      public_id: current.sub,
+      timestamp: String(Math.round(Date.now() / 1000)),
+    };
+    // Cloudinary's signature: sha1 of the sorted parameters followed by the API secret.
+    const payload = Object.entries(params)
+      .map(([k, v]) => `${k}=${v}`)
+      .join('&');
+    return {
+      url: `https://api.cloudinary.com/v1_1/${this.cloudinary.cloudName}/image/upload`,
+      apiKey: this.cloudinary.apiKey,
+      ...params,
+      signature: createHash('sha1')
+        .update(payload + this.cloudinary.apiSecret)
+        .digest('hex'),
+    };
   }
 
   @Post('me/password')

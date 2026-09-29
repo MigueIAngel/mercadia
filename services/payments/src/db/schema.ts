@@ -102,6 +102,38 @@ export const connectedAccounts = pgTable('connected_accounts', {
   updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
 });
 
+/** The buyer's customer record at the processor (Stripe Customer), needed to save cards. */
+export const paymentCustomers = pgTable('payment_customers', {
+  userId: uuid('user_id').primaryKey(),
+  provider: varchar('provider', { length: 10 }).notNull(),
+  providerCustomerId: varchar('provider_customer_id', { length: 80 }).notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+});
+
+/**
+ * Saved cards. Only the processor's reference and display data are stored: never the number
+ * or the CVC (Stripe keeps the card; the simulated processor only validates it).
+ */
+export const paymentMethods = pgTable(
+  'payment_methods',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    userId: uuid('user_id').notNull(),
+    provider: varchar('provider', { length: 10 }).$type<'stripe' | 'mock'>().notNull(),
+    providerRef: varchar('provider_ref', { length: 80 }).notNull(),
+    brand: varchar('brand', { length: 20 }).notNull(),
+    last4: varchar('last4', { length: 4 }).notNull(),
+    expMonth: integer('exp_month').notNull(),
+    expYear: integer('exp_year').notNull(),
+    isDefault: boolean('is_default').notNull().default(false),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    index('payment_methods_user').on(t.userId, t.createdAt),
+    uniqueIndex('payment_methods_ref_key').on(t.providerRef),
+  ],
+);
+
 /** Stripe webhook ids already handled (Stripe retries deliveries). */
 export const webhookEvents = pgTable('webhook_events', {
   id: varchar('id', { length: 80 }).primaryKey(),
@@ -120,3 +152,4 @@ export const outbox = pgTable('outbox', {
 
 export type Payment = typeof payments.$inferSelect;
 export type Transfer = typeof transfers.$inferSelect;
+export type PaymentMethod = typeof paymentMethods.$inferSelect;
