@@ -3,7 +3,7 @@ import { getLocale, getTranslations } from 'next-intl/server';
 import { ProductCard, ProductGrid } from '@/components/ProductCard';
 import { Link } from '@/i18n/navigation';
 import { api, currency } from '@/lib/api';
-import type { Category, SearchResult } from '@/lib/types';
+import type { Category, ProductSummary, SearchResult } from '@/lib/types';
 
 type Params = Record<string, string | undefined>;
 const FILTER_KEYS = [
@@ -58,6 +58,18 @@ export default async function SearchPage({ searchParams }: PageProps<'/[locale]/
     api<SearchResult>(`/products?${query}`, { auth: false }),
     api<Category[]>('/categories', { auth: false, revalidate: 300 }),
   ]);
+  // Few keyword matches ("algo para regalarle a mi mamá"): ask the AI service for products
+  // that match the meaning of the query instead.
+  const exclude = new Set(result.items.map((p) => p.id));
+  const semantic =
+    params.q && result.total < 4 && !params.page
+      ? await api<{ items: ProductSummary[] }>(
+          `/ai/search?${new URLSearchParams({ q: params.q, currency: cur, limit: '8' })}`,
+          { auth: false },
+        )
+          .then((r) => r.items.filter((p) => !exclude.has(p.id)))
+          .catch(() => [])
+      : [];
   const activeCategory = categories.find((c) => c.slug === params.category);
   const hasFilters = FILTER_KEYS.some((k) => k !== 'sort' && params[k]);
 
@@ -222,14 +234,25 @@ export default async function SearchPage({ searchParams }: PageProps<'/[locale]/
         </aside>
 
         <section>
-          {result.items.length === 0 ? (
+          {result.items.length === 0 && semantic.length === 0 ? (
             <p className="card p-10 text-center text-stone-500">{t('noResults')}</p>
-          ) : (
+          ) : result.items.length === 0 ? null : (
             <ProductGrid>
               {result.items.map((p, i) => (
                 <ProductCard key={p.id} product={p} priority={i < 4} />
               ))}
             </ProductGrid>
+          )}
+          {semantic.length > 0 && (
+            <div className={result.items.length ? 'mt-10' : ''}>
+              <h2 className="font-display text-2xl">{t('semanticTitle')}</h2>
+              <p className="mb-4 text-sm text-stone-500">{t('semanticText')}</p>
+              <ProductGrid>
+                {semantic.map((p) => (
+                  <ProductCard key={p.id} product={p} />
+                ))}
+              </ProductGrid>
+            </div>
           )}
           {result.pages > 1 && (
             <nav className="mt-8 flex items-center justify-center gap-3 text-sm">

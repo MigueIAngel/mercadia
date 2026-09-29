@@ -42,7 +42,8 @@
     "stores": "Tiendas destacadas",
     "shopByCategory": "Compra por categoría",
     "seeAll": "Ver todo",
-    "products": "{count} productos"
+    "products": "{count} productos",
+    "forYou": "Recomendado para ti"
   },
   "product": {
     "off": "-{percent}%",
@@ -103,7 +104,9 @@
     "noResults": "No encontramos productos con esos filtros.",
     "prev": "Anterior",
     "next": "Siguiente",
-    "page": "Página {page} de {pages}"
+    "page": "Página {page} de {pages}",
+    "semanticTitle": "Quizás te interese",
+    "semanticText": "Productos relacionados con el significado de tu búsqueda (búsqueda semántica con IA)."
   },
   "store": {
     "since": "En Mercadia desde {date}",
@@ -257,7 +260,25 @@
     "noOrders": "Aún no tienes pedidos.",
     "buyerCity": "Cliente en {city}",
     "reviews": "Reseñas",
-    "messages": "Mensajes"
+    "messages": "Mensajes",
+    "ai": {
+      "open": "Escribir con IA",
+      "title": "Redactor con IA",
+      "help": "Escribe el título, la marca y la categoría, agrega tus notas y la IA arma la descripción. Revísala antes de publicar.",
+      "notes": "Notas del producto",
+      "notesPlaceholder": "Materiales, medidas, qué incluye, para quién es…",
+      "tone": "Tono",
+      "tones": {
+        "professional": "Profesional",
+        "friendly": "Cercano",
+        "premium": "Premium"
+      },
+      "write": "Generar texto",
+      "writing": "Escribiendo…",
+      "needTitle": "Primero escribe el título del producto.",
+      "doneGemini": "Listo: completamos el título y la descripción con Gemini. Revísalos antes de publicar.",
+      "doneLocal": "Listo: generamos un borrador con plantilla (la IA de Gemini no está configurada en esta demo)."
+    }
   },
   "admin": {
     "title": "Administración",
@@ -498,5 +519,25 @@
     "explore": "Explorar productos",
     "dropped": "Bajó {percent}%",
     "remove": "Quitar de favoritos"
+  },
+  "assistant": {
+    "open": "Asistente IA",
+    "close": "Cerrar",
+    "title": "Asistente de compras",
+    "subtitle": "Te ayudo a encontrar productos, comparar y seguir tus pedidos",
+    "welcome": "¡Hola! Cuéntame qué buscas, para quién es y tu presupuesto. También puedo contarte cómo va tu pedido.",
+    "suggestions": {
+      "s1": "Audífonos inalámbricos por menos de 200 mil",
+      "s2": "Un regalo para mi mamá",
+      "s3": "Algo para la cocina",
+      "s4": "¿Cómo van mis pedidos?"
+    },
+    "placeholder": "Escribe tu pregunta…",
+    "send": "Enviar",
+    "clear": "Nueva conversación",
+    "thinking": "Pensando…",
+    "error": "No pude responder en este momento. Intenta de nuevo.",
+    "limited": "Has enviado muchos mensajes seguidos. Espera unos minutos, por favor.",
+    "disclaimer": "Las respuestas las genera una IA y pueden tener errores. Los precios y el stock salen del catálogo."
   }
 }

@@ -2,10 +2,11 @@
 
 import { ImagePlus, Trash2 } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useRouter } from '@/i18n/navigation';
 import { call } from '@/lib/client';
 import type { Category, ProductDetail } from '@/lib/types';
+import { CopywriterPanel } from './CopywriterPanel';
 
 interface Row {
   sku?: string;
@@ -34,6 +35,9 @@ export function ProductForm({
   );
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
+  const formRef = useRef<HTMLFormElement>(null);
+  const field = (name: string) =>
+    formRef.current?.elements.namedItem(name) as HTMLInputElement | HTMLTextAreaElement | null;
 
   const applyOption = () => {
     const values = optionValues
@@ -119,8 +123,29 @@ export function ProductForm({
   };
 
   return (
-    <form className="space-y-6" onSubmit={(e) => submit(e, 'active')}>
+    <form ref={formRef} className="space-y-6" onSubmit={(e) => submit(e, 'active')}>
       <section className="card grid gap-4 p-6 sm:grid-cols-2">
+        <div className="sm:col-span-2">
+          <CopywriterPanel
+            getContext={() => ({
+              title: field('title')?.value ?? '',
+              brand: field('brand')?.value ?? '',
+              category: field('category')?.value ?? '',
+            })}
+            onDraft={(draft) => {
+              const title = field('title');
+              const description = field('description');
+              if (title) title.value = draft.title;
+              if (description)
+                description.value = [
+                  draft.description,
+                  draft.bullets.map((b) => `• ${b}`).join('\n'),
+                ]
+                  .filter(Boolean)
+                  .join('\n\n');
+            }}
+          />
+        </div>
         <div className="sm:col-span-2">
           <label className="label" htmlFor="title">
             {t('fields.title')}

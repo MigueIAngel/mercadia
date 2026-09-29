@@ -134,6 +134,21 @@ LEXICON: dict[str, str] = {
     "mujer": "women womens woman",
     "nino": "kids children",
     "regalo": "gift",
+    "regalar": "gift",
+    "mama": "women woman mother",
+    "madre": "women woman mother",
+    "abuela": "women woman",
+    "esposa": "women woman",
+    "novia": "women woman",
+    "hermana": "women woman",
+    "papa": "men man father",
+    "padre": "men man father",
+    "abuelo": "men man",
+    "esposo": "men man",
+    "novio": "men man",
+    "hermano": "men man",
+    "hijo": "kids",
+    "hija": "kids",
     "barato": "cheap affordable",
     "economico": "cheap affordable",
     "negro": "black",
@@ -192,6 +207,7 @@ def stem(word: str) -> str:
 class Embedder(Protocol):
     name: str
     dims: int
+    version: int
 
     async def embed_documents(self, texts: list[str]) -> list[list[float]]: ...
 
@@ -203,6 +219,8 @@ class HashingEmbedder:
 
     name = "hash512"
     dims = 512
+    # Bump when the lexicon or weights change: stored vectors are re-embedded on the next sync.
+    version = 2
 
     def _bucket(self, feature: str) -> tuple[int, float]:
         digest = hashlib.blake2b(feature.encode(), digest_size=8).digest()
@@ -218,7 +236,7 @@ class HashingEmbedder:
             padded = f"#{root}#"
             for i in range(len(padded) - 2):
                 index, sign = self._bucket(f"t:{padded[i : i + 3]}")
-                vec[index] += 0.25 * sign
+                vec[index] += 0.15 * sign
         norm = math.sqrt(sum(v * v for v in vec)) or 1.0
         return [v / norm for v in vec]
 
@@ -231,6 +249,7 @@ class HashingEmbedder:
 
 class GeminiEmbedder:
     dims = 768
+    version = 1
 
     def __init__(self, api_key: str, model: str):
         from google import genai

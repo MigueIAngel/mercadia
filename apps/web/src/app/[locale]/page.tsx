@@ -3,8 +3,8 @@ import { getTranslations } from 'next-intl/server';
 import { CategoryIcon } from '@/components/CategoryIcon';
 import { ProductRail } from '@/components/ProductRail';
 import { Link } from '@/i18n/navigation';
-import { api, currency } from '@/lib/api';
-import type { HomeData } from '@/lib/types';
+import { api, currency, session } from '@/lib/api';
+import type { HomeData, ProductSummary } from '@/lib/types';
 
 export default async function HomePage({ params }: PageProps<'/[locale]'>) {
   const { locale } = (await params) as { locale: 'es' | 'en' };
@@ -14,6 +14,12 @@ export default async function HomePage({ params }: PageProps<'/[locale]'>) {
     auth: false,
     revalidate: 60,
   }).catch(() => null);
+  // Signed-in shoppers get picks based on their wishlist and purchases (AI service).
+  const forYou = (await session())
+    ? await api<{ basedOn: number; items: ProductSummary[] }>(`/ai/recommendations?currency=${cur}`)
+        .then((r) => (r.basedOn > 0 ? r.items : []))
+        .catch(() => [])
+    : [];
 
   const perks = [
     { icon: ShieldCheck, title: t('perks.secure'), text: t('perks.secureText') },
@@ -75,6 +81,7 @@ export default async function HomePage({ params }: PageProps<'/[locale]'>) {
               ))}
             </div>
           </section>
+          {forYou.length > 0 && <ProductRail title={t('forYou')} items={forYou} />}
           <ProductRail title={t('deals')} items={home.deals} href="/search?onSale=true" />
           <ProductRail
             title={t('bestSellers')}

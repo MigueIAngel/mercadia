@@ -3,9 +3,11 @@ import { DM_Sans, DM_Serif_Display } from 'next/font/google';
 import { notFound } from 'next/navigation';
 import { hasLocale, NextIntlClientProvider } from 'next-intl';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { AssistantWidget } from '@/components/AssistantWidget';
 import { Footer } from '@/components/Footer';
 import { Header } from '@/components/Header';
 import { routing } from '@/i18n/routing';
+import { currency } from '@/lib/api';
 import '../globals.css';
 
 const sans = DM_Sans({ variable: '--font-dm-sans', subsets: ['latin'] });
@@ -35,6 +37,7 @@ export default async function LocaleLayout({ children, params }: LayoutProps<'/[
           <Header />
           <main className="flex-1">{children}</main>
           <Footer />
+          <AssistantWidget currency={await currency()} />
         </NextIntlClientProvider>
       </body>
     </html>
