@@ -38,7 +38,7 @@ MAX_ATTEMPTS = 5
 
 def content_hash(product: dict, embedder: Embedder) -> str:
     text = product_text(product)
-    return hashlib.sha1(f"{embedder.name}\n{text}".encode()).hexdigest()
+    return hashlib.sha1(f"{embedder.name}:{embedder.version}\n{text}".encode()).hexdigest()
 
 
 class Indexer:

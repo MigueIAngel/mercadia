@@ -402,9 +402,13 @@ class Assistant:
         limit = money(max_price * 100, ctx.currency) if max_price else ""
         budget = f" por menos de {limit}" if max_price and es else ""
         budget_en = f" under {limit}" if max_price and not es else ""
-        head = f"Encontré estas opciones{budget}:" if es else f"Here are some options{budget_en}:"
-        lines = [f"• {i['title']} — {i['price']} ({i['store']})" for i in items]
-        return head + "\n" + "\n".join(lines)
+        # The web app renders the products as cards right below, so the text stays short.
+        count = len(items)
+        if es:
+            noun = "opción" if count == 1 else "opciones"
+            return f"Encontré {count} {noun}{budget}. ¿Te muestro algo más específico?"
+        noun = "option" if count == 1 else "options"
+        return f"I found {count} {noun}{budget_en}. Want something more specific?"
 
 
 BUDGET = re.compile(

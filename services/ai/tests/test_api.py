@@ -65,7 +65,7 @@ def test_assistant_searches_with_a_budget(client):
     assert res["provider"] == "local"
     assert res["tools"] == ["search_products"]
     assert [p["id"] for p in res["products"]] == ["p-earbuds"]
-    assert "Beats Flex" in res["reply"] and "$ 199.960" in res["reply"]
+    assert res["reply"].startswith("Encontré 1 opción por menos de $ 300.000")
 
 
 def test_assistant_orders_need_a_session_and_tracking_works(client, fake):
