@@ -86,3 +86,14 @@ def test_rate_limit_hint_is_parsed_and_capped():
     assert retry_after(RuntimeError("429 RESOURCE_EXHAUSTED")) == 30
     assert retry_after(RuntimeError("retry in 900s 429")) == 65
     assert retry_after(RuntimeError("500 INTERNAL")) is None
+
+
+def test_hidden_picks_line_is_parsed_and_removed():
+    from app.assistant import split_picks
+
+    assert split_picks("Te recomiendo estas.\n[[ids: p1, p2]]") == (
+        "Te recomiendo estas.",
+        ["p1", "p2"],
+    )
+    assert split_picks("No encontré nada.\n[[ids: ]]") == ("No encontré nada.", [])
+    assert split_picks("Sin línea oculta") == ("Sin línea oculta", None)

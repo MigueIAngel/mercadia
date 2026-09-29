@@ -241,8 +241,23 @@ def system_prompt(ctx: Context) -> str:
         "say so and suggest a broader search. The product cards are shown below your message, "
         "so don't paste links. Payments are protected: the seller is paid when the order is "
         "delivered, and buyers can open a case from their order if something goes wrong. "
-        "This is a demo store: payments use test cards and nothing is charged."
+        "This is a demo store: payments use test cards and nothing is charged. "
+        "End every answer with one last line exactly like [[ids: id1, id2]] listing the ids of "
+        "the products you recommended (empty brackets [[ids: ]] if none); it is hidden from the "
+        "shopper and decides which product cards are shown."
     )
+
+
+PICKS = re.compile(r"\[\[\s*ids\s*:([^\]]*)\]\]\s*$", re.IGNORECASE)
+
+
+def split_picks(text: str) -> tuple[str, list[str] | None]:
+    """Removes the hidden `[[ids: …]]` line; returns the text and the ids (None if absent)."""
+    match = PICKS.search(text.strip())
+    if not match:
+        return text.strip(), None
+    ids = [i.strip() for i in match.group(1).split(",") if i.strip()]
+    return text.strip()[: match.start()].rstrip(), ids
 
 
 class Assistant:
@@ -266,7 +281,10 @@ class Assistant:
         if self.client:
             for model in self.models:
                 try:
-                    text = await self._gemini(history, message, ctx, model)
+                    text, picks = split_picks(await self._gemini(history, message, ctx, model))
+                    if picks is not None:
+                        # Only the products the model actually recommended get a card.
+                        ctx.products = {i: ctx.products[i] for i in picks if i in ctx.products}
                     provider = "gemini"
                     break
                 except Exception as error:  # overload, quota, network, safety block…
