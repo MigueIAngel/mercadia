@@ -45,9 +45,20 @@ export default async function ProductPage({ params }: PageProps<'/[locale]/p/[sl
     page: 1,
   };
   const [related, reviews, user] = await Promise.all([
-    api<ProductSummary[]>(`/products/${slug}/related?currency=${product.currency}`, {
-      auth: false,
-    }).catch(() => []),
+    // Semantic neighbours from the AI service; the catalog's same-category list as fallback.
+    api<{ items: ProductSummary[] }>(
+      `/ai/similar/${product.id}?currency=${product.currency}&limit=4`,
+      {
+        auth: false,
+        revalidate: 300,
+      },
+    )
+      .then((r) => (r.items.length ? r.items : Promise.reject(new Error('empty'))))
+      .catch(() =>
+        api<ProductSummary[]>(`/products/${slug}/related?currency=${product.currency}`, {
+          auth: false,
+        }).catch(() => []),
+      ),
     api<ReviewPage>(`/reviews/products/${product.id}`, { auth: false }).catch(() => emptyReviews),
     session(),
   ]);
